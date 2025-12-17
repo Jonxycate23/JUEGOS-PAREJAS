@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juegos para Parejas 💕</title>
+</head>
+<body>
+
+<h1>💖 Juegos para Parejas</h1>
+
+<h2>🆕 Crear sala</h2>
+<button id="create-room">Crear Sala</button>
+<p id="room-created"></p>
+
+<hr>
+
+<h2>🔑 Unirse a sala</h2>
+<input id="room-id-input" placeholder="Código de sala">
+<button id="join-room">Unirse</button>
+<p id="room-joined"></p>
+
+<script type="module">
+  import "./js/firebase.js";
+  import "./js/auth.js";
+  import "./js/rooms.js";
+</script>
+
+</body>
+</html>

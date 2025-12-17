@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sala de Juego 💕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #fff0f6;
+      padding: 20px;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #hangman-area input {
+      font-size: 18px;
+      padding: 8px;
+      text-align: center;
+      width: 200px;
+    }
+
+    #word-display {
+      font-size: 28px;
+      letter-spacing: 6px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>💖 Juegos para Parejas</h1>
+
+  <div id="room-info">
+    <h2>🔑 Código de la sala</h2>
+    <div id="room-code" style="font-size:32px;font-weight:bold"></div>
+    <p id="status">Cargando sala...</p>
+  </div>
+
+  <hr>
+
+  <!-- SELECTOR DE JUEGOS -->
+  <div id="game-selector" style="display:none">
+    <h2>🎮 Selecciona un juego</h2>
+    <button data-game="hangman">🔤 Ahorcado</button>
+    <button disabled>🧠 Memoria (pronto)</button>
+    <button disabled>💬 Verdad o Reto (pronto)</button>
+  </div>
+
+  <div id="waiting-game" style="display:none">
+    <h2>⏳ Esperando que tu pareja elija el juego...</h2>
+  </div>
+
+  <!-- AHORCADO -->
+  <div id="hangman-area" style="display:none">
+    <h2>🔤 Juego del Ahorcado</h2>
+
+    <!-- FASE: INGRESAR PALABRA -->
+    <div id="set-word-area" style="display:none">
+      <p>Escribe la palabra secreta 😈</p>
+      <input id="secret-word-input" type="password" />
+      <br><br>
+      <button id="set-word-btn">Guardar palabra</button>
+    </div>
+
+    <!-- FASE: ADIVINAR -->
+    <div id="guess-area" style="display:none">
+      <div id="word-display">_ _ _ _</div>
+      <p>Errores: <span id="mistakes">0</span> / 6</p>
+
+      <input id="letter-input" maxlength="1" />
+      <br><br>
+      <button id="guess-btn">Adivinar letra</button>
+    </div>
+
+    <p id="hangman-msg"></p>
+  </div>
+
+  <script type="module" src="./js/auth.js"></script>
+  <script type="module" src="./js/room-listener.js"></script>
+  <script type="module" src="./js/game-selector.js"></script>
+  <script type="module" src="./js/hangman.js"></script>
+
+</body>
+</html>

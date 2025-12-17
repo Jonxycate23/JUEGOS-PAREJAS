@@ -1,0 +1,76 @@
+.hangman-container {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+}
+
+.drawing {
+  width: 200px;
+  height: 260px;
+  border-left: 4px solid #333;
+  position: relative;
+}
+
+.drawing::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 4px;
+  background: #333;
+}
+
+.drawing::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 120px;
+  width: 4px;
+  height: 40px;
+  background: #333;
+}
+
+.head, .body, .arm, .leg {
+  position: absolute;
+  background: #333;
+}
+
+.head {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  top: 40px;
+  left: 100px;
+}
+
+.body {
+  width: 4px;
+  height: 70px;
+  top: 80px;
+  left: 118px;
+}
+
+.arm.left { width: 40px; height: 4px; top: 100px; left: 80px; }
+.arm.right { width: 40px; height: 4px; top: 100px; left: 118px; }
+
+.leg.left { width: 4px; height: 40px; top: 150px; left: 105px; }
+.leg.right { width: 4px; height: 40px; top: 150px; left: 130px; }
+
+.game-info {
+  text-align: center;
+}
+
+#word-display {
+  font-size: 32px;
+  letter-spacing: 10px;
+}
+
+.challenge {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #c0392b;
+}
+
+
