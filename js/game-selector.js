@@ -8,6 +8,7 @@ import {
 const params = new URLSearchParams(window.location.search);
 const roomId = params.get("room");
 
+// Selector inicial
 document.querySelectorAll("#game-selector button").forEach(btn => {
   btn.addEventListener("click", async () => {
     const game = btn.dataset.game;
@@ -21,12 +22,46 @@ document.querySelectorAll("#game-selector button").forEach(btn => {
           setter: "p1",
           guesser: "p2",
           secretWord: "",
+          challenge: "",
           displayWord: "",
           guessedLetters: [],
           mistakes: 0,
-          maxMistakes: 6
+          maxMistakes: 6,
+          winner: null
         }
       }
     });
+  });
+});
+
+// Selector del modal (cambio de juego)
+document.querySelectorAll("#game-selector-modal button[data-game]").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const game = btn.dataset.game;
+
+    // Cerrar modal
+    document.getElementById("game-selector-modal").classList.remove("active");
+
+    // Resetear el juego seleccionado
+    await updateDoc(doc(db, "rooms", roomId), {
+      state: "playing",
+      game,
+      gameData: {
+        hangman: {
+          phase: "set-word",
+          setter: "p1",
+          guesser: "p2",
+          secretWord: "",
+          challenge: "",
+          displayWord: "",
+          guessedLetters: [],
+          mistakes: 0,
+          maxMistakes: 6,
+          winner: null
+        }
+      }
+    });
+
+    console.log("🎮 Juego cambiado a:", game);
   });
 });

@@ -3,21 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <title>Juegos para Parejas 💕</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      color: #764ba2;
+      font-size: 20px;
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin: 10px;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    input {
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      margin: 10px;
+      width: 200px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    p {
+      color: #666;
+      margin-top: 10px;
+    }
+
+    hr {
+      border: none;
+      border-top: 2px solid #eee;
+      margin: 30px 0;
+    }
+
+    .subtitle {
+      color: #999;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
 
-<h1>💖 Juegos para Parejas</h1>
+<div class="container">
+  <h1>💖 Juegos para Parejas</h1>
+  <p class="subtitle">Crea una sala o únete a una existente</p>
 
-<h2>🆕 Crear sala</h2>
-<button id="create-room">Crear Sala</button>
-<p id="room-created"></p>
+  <h2>🆕 Crear sala</h2>
+  <button id="create-room">Crear Sala Nueva</button>
+  <p id="room-created"></p>
 
-<hr>
+  <hr>
 
-<h2>🔑 Unirse a sala</h2>
-<input id="room-id-input" placeholder="Código de sala">
-<button id="join-room">Unirse</button>
-<p id="room-joined"></p>
+  <h2>🔑 Unirse a sala</h2>
+  <input id="room-id-input" placeholder="Código de sala" maxlength="5">
+  <br>
+  <button id="join-room">Unirse</button>
+  <p id="room-joined"></p>
+</div>
 
 <script type="module">
   import "./js/firebase.js";

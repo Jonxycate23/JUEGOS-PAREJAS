@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Sala de Juego 💕</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/hangman.css">
 
   <style>
     body {
@@ -18,19 +19,94 @@
       margin: 8px;
       font-size: 16px;
       cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: #e74c3c;
+      color: white;
+      transition: background 0.3s;
     }
 
-    #hangman-area input {
+    button:hover:not(:disabled) {
+      background: #c0392b;
+    }
+
+    button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+
+    input {
       font-size: 18px;
-      padding: 8px;
+      padding: 10px;
       text-align: center;
-      width: 200px;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      margin: 5px;
     }
 
     #word-display {
-      font-size: 28px;
-      letter-spacing: 6px;
+      font-size: 36px;
+      letter-spacing: 10px;
       margin: 20px 0;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .game-section {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      max-width: 700px;
+      margin: 20px auto;
+    }
+
+    #guessed-letters {
+      color: #7f8c8d;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    #result-area {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+
+    .change-game-btn {
+      background: #3498db;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+    }
+
+    .change-game-btn:hover {
+      background: #2980b9;
+    }
+
+    #game-selector-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #game-selector-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
     }
   </style>
 </head>
@@ -45,49 +121,130 @@
     <p id="status">Cargando sala...</p>
   </div>
 
+  <!-- Botón para cambiar de juego -->
+  <button class="change-game-btn" id="open-game-selector">🎮 Cambiar Juego</button>
+
+  <!-- Modal selector de juegos -->
+  <div id="game-selector-modal">
+    <div class="modal-content">
+      <h2>🎮 Cambiar de juego</h2>
+      <p>Ambos jugadores verán el cambio inmediatamente</p>
+      <button data-game="hangman">🔤 Ahorcado</button>
+      <button disabled>🧠 Memoria (pronto)</button>
+      <button disabled>❌⭕ Totito (pronto)</button>
+      <button disabled>💬 Verdad o Reto (pronto)</button>
+      <br><br>
+      <button id="close-modal" style="background: #95a5a6;">Cancelar</button>
+    </div>
+  </div>
+
   <hr>
 
-  <!-- SELECTOR DE JUEGOS -->
+  <!-- SELECTOR DE JUEGOS INICIAL -->
   <div id="game-selector" style="display:none">
-    <h2>🎮 Selecciona un juego</h2>
-    <button data-game="hangman">🔤 Ahorcado</button>
-    <button disabled>🧠 Memoria (pronto)</button>
-    <button disabled>💬 Verdad o Reto (pronto)</button>
+    <div class="game-section">
+      <h2>🎮 Selecciona un juego</h2>
+      <button data-game="hangman">🔤 Ahorcado</button>
+      <button disabled>🧠 Memoria (pronto)</button>
+      <button disabled>❌⭕ Totito (pronto)</button>
+      <button disabled>💬 Verdad o Reto (pronto)</button>
+    </div>
   </div>
 
   <div id="waiting-game" style="display:none">
-    <h2>⏳ Esperando que tu pareja elija el juego...</h2>
+    <div class="game-section">
+      <h2>⏳ Esperando que tu pareja elija el juego...</h2>
+    </div>
   </div>
 
   <!-- AHORCADO -->
   <div id="hangman-area" style="display:none">
-    <h2>🔤 Juego del Ahorcado</h2>
+    <div class="game-section">
+      <h2>🔤 Juego del Ahorcado</h2>
 
-    <!-- FASE: INGRESAR PALABRA -->
-    <div id="set-word-area" style="display:none">
-      <p>Escribe la palabra secreta 😈</p>
-      <input id="secret-word-input" type="password" />
-      <br><br>
-      <button id="set-word-btn">Guardar palabra</button>
+      <!-- FASE: INGRESAR PALABRA Y RETO -->
+      <div id="set-word-area" style="display:none">
+        <p style="font-size: 18px; color: #e74c3c;">Escribe la palabra secreta y el reto 😈</p>
+        
+        <div style="margin: 20px 0;">
+          <input id="secret-word-input" type="password" placeholder="Palabra secreta" style="width: 250px;" />
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <textarea id="challenge-input" placeholder="Escribe el reto que deberá cumplir si pierde... 😏" 
+                    style="width: 100%; max-width: 400px; min-height: 80px; font-size: 16px; padding: 10px; border-radius: 8px; border: 2px solid #e74c3c; resize: vertical;"></textarea>
+        </div>
+        
+        <button id="set-word-btn">Guardar y Empezar</button>
+      </div>
+
+      <!-- FASE: ADIVINAR -->
+      <div id="guess-area" style="display:none">
+        <div class="hangman-container">
+          <!-- Dibujo del muñeco -->
+          <div class="drawing" id="hangman-drawing"></div>
+
+          <!-- Info del juego -->
+          <div class="game-info">
+            <div id="word-display">_ _ _ _</div>
+            <p style="font-size: 18px;">Errores: <span id="mistakes" style="color: #e74c3c; font-weight: bold;">0</span> / 6</p>
+            <p style="font-size: 14px; color: #7f8c8d;">Letras usadas:</p>
+            <p id="guessed-letters" style="font-weight: bold;">-</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <input id="letter-input" maxlength="1" placeholder="?" style="width: 60px; font-size: 24px; text-transform: uppercase;" />
+          <br><br>
+          <button id="guess-btn">Adivinar Letra</button>
+        </div>
+      </div>
+
+      <!-- FASE: RESULTADO -->
+      <div id="result-area" style="display:none">
+        <div id="result-msg"></div>
+        <button id="next-round-btn" style="display:none; background: #27ae60; font-size: 18px;">🔄 Siguiente Ronda (Intercambiar Roles)</button>
+      </div>
+
+      <p id="hangman-msg" style="font-size: 16px; color: #7f8c8d; margin-top: 20px;"></p>
     </div>
-
-    <!-- FASE: ADIVINAR -->
-    <div id="guess-area" style="display:none">
-      <div id="word-display">_ _ _ _</div>
-      <p>Errores: <span id="mistakes">0</span> / 6</p>
-
-      <input id="letter-input" maxlength="1" />
-      <br><br>
-      <button id="guess-btn">Adivinar letra</button>
-    </div>
-
-    <p id="hangman-msg"></p>
   </div>
 
   <script type="module" src="./js/auth.js"></script>
   <script type="module" src="./js/room-listener.js"></script>
   <script type="module" src="./js/game-selector.js"></script>
   <script type="module" src="./js/hangman.js"></script>
+  
+  <script type="module">
+    // Inicializar chat
+    import { initChat } from './js/chat.js';
+    
+    // Esperar a que el DOM y auth estén listos
+    setTimeout(() => {
+      initChat();
+    }, 1500);
+  </script>
+
+  <script type="module">
+    // Lógica del modal de cambio de juego
+    const modal = document.getElementById("game-selector-modal");
+    const openBtn = document.getElementById("open-game-selector");
+    const closeBtn = document.getElementById("close-modal");
+
+    openBtn.addEventListener("click", () => {
+      modal.classList.add("active");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      modal.classList.remove("active");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("active");
+      }
+    });
+  </script>
 
 </body>
 </html>

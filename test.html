@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TEST - Juegos</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    .test-box {
+      background: white;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    .success { border-left-color: #27ae60; }
+    .error { border-left-color: #e74c3c; }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      background: #667eea;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #results {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🧪 TEST DE FUNCIONALIDAD</h1>
+
+<div class="test-box">
+  <h3>TEST 1: Firebase</h3>
+  <button onclick="testFirebase()">Probar Firebase</button>
+  <p id="firebase-result"></p>
+</div>
+
+<div class="test-box">
+  <h3>TEST 2: Autenticación</h3>
+  <button onclick="testAuth()">Probar Auth</button>
+  <p id="auth-result"></p>
+</div>
+
+<div class="test-box">
+  <h3>TEST 3: Crear Sala</h3>
+  <button onclick="testCreateRoom()">Crear Sala de Prueba</button>
+  <p id="room-result"></p>
+</div>
+
+<div id="results"></div>
+
+<script type="module">
+  import { db, auth } from "./js/firebase.js";
+  import { 
+    doc, 
+    setDoc, 
+    serverTimestamp 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  window.testFirebase = function() {
+    const result = document.getElementById('firebase-result');
+    try {
+      if (db) {
+        result.innerHTML = '✅ Firebase configurado correctamente';
+        result.style.color = '#27ae60';
+      } else {
+        result.innerHTML = '❌ Firebase NO configurado';
+        result.style.color = '#e74c3c';
+      }
+    } catch(e) {
+      result.innerHTML = '❌ Error: ' + e.message;
+      result.style.color = '#e74c3c';
+    }
+  }
+
+  window.testAuth = async function() {
+    const result = document.getElementById('auth-result');
+    result.innerHTML = '⏳ Autenticando...';
+    
+    try {
+      const userCred = await signInAnonymously(auth);
+      result.innerHTML = `✅ Autenticado! UID: ${userCred.user.uid.substring(0, 10)}...`;
+      result.style.color = '#27ae60';
+    } catch(e) {
+      result.innerHTML = '❌ Error: ' + e.message;
+      result.style.color = '#e74c3c';
+    }
+  }
+
+  window.testCreateRoom = async function() {
+    const result = document.getElementById('room-result');
+    result.innerHTML = '⏳ Creando sala...';
+    
+    try {
+      // Primero autenticar
+      const userCred = await signInAnonymously(auth);
+      const testRoomId = 'TEST' + Math.floor(Math.random() * 1000);
+      
+      await setDoc(doc(db, "rooms", testRoomId), {
+        createdAt: serverTimestamp(),
+        state: "waiting",
+        turn: "p1",
+        players: {
+          p1: {
+            uid: userCred.user.uid,
+            online: true
+          }
+        },
+        game: null,
+        gameData: {}
+      });
+      
+      result.innerHTML = `✅ Sala creada! Código: <strong>${testRoomId}</strong><br>
+        <a href="room.html?room=${testRoomId}" target="_blank">Ir a la sala</a>`;
+      result.style.color = '#27ae60';
+    } catch(e) {
+      result.innerHTML = '❌ Error: ' + e.message;
+      result.style.color = '#e74c3c';
+    }
+  }
+</script>
+
+<hr>
+<h3>📋 Checklist de Archivos</h3>
+<ul>
+  <li>✅ index.html</li>
+  <li>✅ room.html</li>
+  <li>✅ js/firebase.js</li>
+  <li>✅ js/auth.js</li>
+  <li>✅ js/rooms.js</li>
+  <li>✅ js/hangman.js</li>
+  <li>✅ js/chat.js</li>
+  <li>✅ js/game-selector.js</li>
+  <li>✅ js/room-listener.js</li>
+  <li>✅ css/hangman.css</li>
+</ul>
+
+</body>
+</html>

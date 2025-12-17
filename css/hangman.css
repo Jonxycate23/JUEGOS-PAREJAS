@@ -3,6 +3,7 @@
   gap: 30px;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .drawing {
@@ -72,5 +73,3 @@
   font-weight: bold;
   color: #c0392b;
 }
-
-

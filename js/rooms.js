@@ -49,7 +49,8 @@ createRoomBtn?.addEventListener("click", async () => {
       p2: null
     },
     game: null,
-    gameData: {}
+    gameData: {},
+    messages: [] // Campo para el chat
   });
 
   console.log("🆕 Sala creada:", roomId);
