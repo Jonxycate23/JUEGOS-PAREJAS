@@ -5,7 +5,8 @@ import {
   doc,
   updateDoc,
   arrayUnion,
-  onSnapshot
+  onSnapshot,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const params = new URLSearchParams(window.location.search);
@@ -13,128 +14,64 @@ const roomId = params.get("room");
 
 // Emojis personalizados únicos
 const CUSTOM_EMOJIS = {
-  // Amor y cariño
-  'heart_eyes': '😍',
-  'kiss': '😘',
-  'love': '🥰',
-  'hug': '🤗',
-  'hearts': '💕',
-  'sparkle_heart': '💖',
-  'cupid': '💘',
-  'rose': '🌹',
-  
-  // Reacciones especiales
-  'fire': '🔥',
-  'star': '⭐',
-  'boom': '💥',
-  'tada': '🎉',
-  'crown': '👑',
-  'gem': '💎',
-  'magic': '✨',
-  'rainbow': '🌈',
-  
-  // Emociones
-  'laugh': '😂',
-  'wink': '😉',
-  'smirk': '😏',
-  'cool': '😎',
-  'angel': '😇',
-  'devil': '😈',
-  'think': '🤔',
-  'wow': '😮',
-  'shock': '😱',
-  'cry': '😢',
-  'nervous': '😅',
-  'blush': '😊',
-  
-  // Juegos y diversión
-  'game': '🎮',
-  'trophy': '🏆',
-  'medal': '🥇',
-  'clap': '👏',
-  'muscle': '💪',
-  'finger_cross': '🤞',
-  'party': '🥳',
-  'dance': '💃',
-  
-  // Alimentos y bebidas
-  'pizza': '🍕',
-  'cake': '🍰',
-  'wine': '🍷',
-  'beer': '🍺',
-  'coffee': '☕',
-  'ice_cream': '🍦',
-  'chocolate': '🍫',
-  'strawberry': '🍓',
-  
-  // Animales lindos
-  'cat': '🐱',
-  'dog': '🐶',
-  'bear': '🐻',
-  'panda': '🐼',
-  'koala': '🐨',
-  'unicorn': '🦄',
-  'butterfly': '🦋',
-  'penguin': '🐧',
-  
-  // Símbolos especiales
-  'star_eyes': '🤩',
-  'peace': '✌️',
-  'ok_hand': '👌',
-  'thumbs_up': '👍',
-  'fist': '👊',
-  'wave': '👋',
-  'point_right': '👉',
-  'point_left': '👈'
+  'heart_eyes': '😍', 'kiss': '😘', 'love': '🥰', 'hug': '🤗',
+  'hearts': '💕', 'sparkle_heart': '💖', 'cupid': '💘', 'rose': '🌹',
+  'fire': '🔥', 'star': '⭐', 'boom': '💥', 'tada': '🎉',
+  'crown': '👑', 'gem': '💎', 'magic': '✨', 'rainbow': '🌈',
+  'laugh': '😂', 'wink': '😉', 'smirk': '😏', 'cool': '😎',
+  'angel': '😇', 'devil': '😈', 'think': '🤔', 'wow': '😮',
+  'game': '🎮', 'trophy': '🏆', 'medal': '🥇', 'clap': '👏',
+  'pizza': '🍕', 'cake': '🍰', 'wine': '🍷', 'coffee': '☕',
+  'cat': '🐱', 'dog': '🐶', 'bear': '🐻', 'unicorn': '🦄'
 };
 
-// Categorías de emojis
 const EMOJI_CATEGORIES = {
-  'Amor': ['heart_eyes', 'kiss', 'love', 'hug', 'hearts', 'sparkle_heart', 'cupid', 'rose'],
-  'Especial': ['fire', 'star', 'boom', 'tada', 'crown', 'gem', 'magic', 'rainbow'],
-  'Emociones': ['laugh', 'wink', 'smirk', 'cool', 'angel', 'devil', 'think', 'wow'],
-  'Juego': ['game', 'trophy', 'medal', 'clap', 'muscle', 'finger_cross', 'party', 'dance'],
-  'Comida': ['pizza', 'cake', 'wine', 'beer', 'coffee', 'ice_cream', 'chocolate', 'strawberry'],
-  'Animales': ['cat', 'dog', 'bear', 'panda', 'koala', 'unicorn', 'butterfly', 'penguin']
+  'Amor': ['heart_eyes', 'kiss', 'love', 'hug', 'hearts', 'sparkle_heart'],
+  'Especial': ['fire', 'star', 'boom', 'tada', 'crown', 'gem'],
+  'Emociones': ['laugh', 'wink', 'smirk', 'cool', 'angel', 'devil'],
+  'Juego': ['game', 'trophy', 'medal', 'clap'],
+  'Comida': ['pizza', 'cake', 'wine', 'coffee'],
+  'Animales': ['cat', 'dog', 'bear', 'unicorn']
 };
 
 let chatOpen = false;
+let partnerInfo = { name: 'Pareja', avatar: '💕' };
 
 // Crear HTML del chat
 export function initChat() {
   if (!document.getElementById('chat-widget')) {
     const chatHTML = `
       <div id="chat-widget">
-        <!-- Botón flotante -->
         <button id="chat-toggle" class="chat-fab">
           💬
           <span class="chat-badge" id="unread-badge" style="display: none;">0</span>
         </button>
 
-        <!-- Ventana de chat -->
         <div id="chat-window" class="chat-window">
-          <!-- Header -->
           <div class="chat-header">
-            <span>💕 Chat de Pareja</span>
-            <div>
-              <button id="emoji-panel-toggle" class="chat-btn-small">😊</button>
-              <button id="chat-close" class="chat-btn-small">✕</button>
+            <div class="chat-header-info" id="chat-header-info">
+              <div class="chat-header-avatar">💕</div>
+              <div class="chat-header-text">
+                <div class="chat-header-name">Chat de Pareja</div>
+                <div class="chat-header-status">En línea</div>
+              </div>
+            </div>
+            <div class="chat-header-buttons">
+              <button id="emoji-panel-toggle" class="chat-btn-small" title="Emojis">😊</button>
+              <button id="chat-close" class="chat-btn-small" title="Cerrar">✕</button>
             </div>
           </div>
 
-          <!-- Panel de emojis -->
           <div id="emoji-panel" class="emoji-panel" style="display: none;">
             ${generateEmojiPanel()}
           </div>
 
-          <!-- Mensajes -->
           <div id="chat-messages" class="chat-messages"></div>
 
-          <!-- Input -->
           <div class="chat-input-container">
             <input type="text" id="chat-input" placeholder="Escribe un mensaje..." maxlength="200">
-            <button id="chat-send">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button id="chat-send" title="Enviar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
               </svg>
             </button>
@@ -146,6 +83,50 @@ export function initChat() {
     document.body.insertAdjacentHTML('beforeend', chatHTML);
     attachChatStyles();
     attachChatListeners();
+    loadPartnerInfo();
+  }
+}
+
+// Cargar información de la pareja
+async function loadPartnerInfo() {
+  if (!roomId) return;
+  
+  const roomRef = doc(db, "rooms", roomId);
+  const roomSnap = await getDoc(roomRef);
+  
+  if (roomSnap.exists()) {
+    const room = roomSnap.data();
+    const players = room.players;
+    
+    // Determinar quién es la pareja
+    let partner = null;
+    if (players.p1?.uid === currentUser.uid && players.p2) {
+      partner = players.p2;
+    } else if (players.p2?.uid === currentUser.uid && players.p1) {
+      partner = players.p1;
+    }
+    
+    if (partner) {
+      partnerInfo = {
+        name: partner.name || 'Pareja',
+        avatar: partner.avatar || '💕'
+      };
+      updateChatHeader();
+    }
+  }
+}
+
+// Actualizar header del chat
+function updateChatHeader() {
+  const headerInfo = document.getElementById('chat-header-info');
+  if (headerInfo) {
+    headerInfo.innerHTML = `
+      <div class="chat-header-avatar">${partnerInfo.avatar}</div>
+      <div class="chat-header-text">
+        <div class="chat-header-name">${partnerInfo.name}</div>
+        <div class="chat-header-status">En línea</div>
+      </div>
+    `;
   }
 }
 
@@ -218,8 +199,8 @@ function attachChatStyles() {
       position: absolute;
       bottom: 80px;
       right: 0;
-      width: 350px;
-      height: 500px;
+      width: 320px;
+      max-height: 500px;
       background: white;
       border-radius: 15px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.3);
@@ -235,23 +216,60 @@ function attachChatStyles() {
     .chat-header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 15px;
+      padding: 12px 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .chat-header-avatar {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .chat-header-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .chat-header-name {
       font-weight: bold;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .chat-header-status {
+      font-size: 11px;
+      opacity: 0.8;
+      line-height: 1;
+    }
+
+    .chat-header-buttons {
+      display: flex;
+      gap: 5px;
     }
 
     .chat-btn-small {
       background: rgba(255,255,255,0.2);
       border: none;
       color: white;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       cursor: pointer;
-      margin-left: 8px;
-      font-size: 18px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
     }
 
     .chat-btn-small:hover {
@@ -260,34 +278,34 @@ function attachChatStyles() {
 
     .emoji-panel {
       background: #f8f9fa;
-      max-height: 250px;
+      max-height: 180px;
       overflow-y: auto;
       border-bottom: 1px solid #e0e0e0;
     }
 
     .emoji-category {
-      padding: 10px;
+      padding: 8px;
     }
 
     .emoji-category-name {
-      font-size: 12px;
+      font-size: 11px;
       color: #666;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
     }
 
     .emoji-grid {
       display: grid;
       grid-template-columns: repeat(8, 1fr);
-      gap: 5px;
+      gap: 3px;
     }
 
     .emoji-btn {
       background: white;
       border: 1px solid #e0e0e0;
-      border-radius: 5px;
-      padding: 5px;
-      font-size: 20px;
+      border-radius: 4px;
+      padding: 4px;
+      font-size: 18px;
       cursor: pointer;
       transition: transform 0.2s;
     }
@@ -300,28 +318,32 @@ function attachChatStyles() {
     .chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 15px;
+      padding: 12px;
       background: #fafafa;
+      max-height: 300px;
     }
 
     .chat-message {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
       animation: slideIn 0.3s ease;
     }
 
     .message-user-info {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 5px;
+      gap: 6px;
+      margin-bottom: 4px;
     }
 
     .message-avatar {
-      font-size: 20px;
+      font-size: 18px;
+      line-height: 1;
     }
 
     .message-username {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       color: #667eea;
     }
@@ -338,47 +360,55 @@ function attachChatStyles() {
     }
 
     .chat-message.me {
-      text-align: right;
+      align-items: flex-end;
+    }
+
+    .chat-message.them {
+      align-items: flex-start;
     }
 
     .chat-message-bubble {
-      display: inline-block;
-      padding: 10px 15px;
-      border-radius: 18px;
-      max-width: 70%;
+      padding: 8px 12px;
+      border-radius: 15px;
+      max-width: 75%;
       word-wrap: break-word;
+      font-size: 13px;
+      line-height: 1.4;
     }
 
     .chat-message.me .chat-message-bubble {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
+      border-bottom-right-radius: 4px;
     }
 
     .chat-message.them .chat-message-bubble {
       background: white;
       color: #333;
       border: 1px solid #e0e0e0;
+      border-bottom-left-radius: 4px;
     }
 
     .chat-message-time {
       font-size: 10px;
       color: #999;
-      margin-top: 5px;
+      margin-top: 3px;
     }
 
     .chat-input-container {
       display: flex;
-      padding: 15px;
+      padding: 10px;
       border-top: 1px solid #e0e0e0;
       background: white;
+      gap: 8px;
     }
 
     #chat-input {
       flex: 1;
       border: 1px solid #e0e0e0;
       border-radius: 20px;
-      padding: 10px 15px;
-      font-size: 14px;
+      padding: 8px 12px;
+      font-size: 13px;
       outline: none;
     }
 
@@ -386,25 +416,55 @@ function attachChatStyles() {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
       color: white;
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      margin-left: 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
+      transition: opacity 0.2s;
     }
 
     #chat-send:hover {
       opacity: 0.9;
     }
 
+    #chat-send svg {
+      width: 18px;
+      height: 18px;
+    }
+
     @media (max-width: 768px) {
       .chat-window {
         width: calc(100vw - 40px);
-        height: 70vh;
+        max-width: 350px;
         right: -10px;
+        bottom: 70px;
+      }
+      
+      .chat-messages {
+        max-height: 250px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #chat-widget {
+        bottom: 15px;
+        right: 15px;
+      }
+      
+      .chat-fab {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+      }
+      
+      .chat-window {
+        width: calc(100vw - 30px);
+        max-height: 400px;
+        bottom: 65px;
       }
     }
   `;

@@ -245,8 +245,8 @@ async function createRoom() {
   try {
     await setDoc(doc(db, 'rooms', roomId), {
       createdAt: serverTimestamp(),
-      state: 'waiting',
-      game: selectedGame,
+      state: 'ready',  // Cambiar a 'ready' para que no pida seleccionar juego
+      game: selectedGame,  // Guardar el juego seleccionado
       turn: 'p1',
       players: {
         p1: {
@@ -260,10 +260,11 @@ async function createRoom() {
       chat: []
     });
 
-    console.log('🆕 Sala creada:', roomId);
+    console.log('🆕 Sala creada:', roomId, 'Juego:', selectedGame);
     
-    // Guardar ID de sala en sessionStorage
+    // Guardar ID de sala y juego en sessionStorage
     sessionStorage.setItem('currentRoom', roomId);
+    sessionStorage.setItem('selectedGame', selectedGame);
     
     // Redirigir a la sala
     window.location.href = `room.html?room=${roomId}`;

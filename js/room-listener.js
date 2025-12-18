@@ -3,7 +3,8 @@ import { currentUser } from "./auth.js";
 
 import {
   doc,
-  onSnapshot
+  onSnapshot,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const roomCodeEl = document.getElementById("room-code");
@@ -31,12 +32,23 @@ onSnapshot(roomRef, (snap) => {
   const isP1 = room.players?.p1?.uid === currentUser.uid;
   const isP2 = room.players?.p2?.uid === currentUser.uid;
 
-  if (room.state === "ready") {
+  // Si ya hay un juego seleccionado, ir directo a playing
+  if (room.game && room.state === "ready") {
+    selector.style.display = "none";
+    waiting.style.display = "none";
+    
+    // Cambiar automáticamente a playing
+    if (isP1) {
+      updateDoc(roomRef, { state: "playing" });
+    }
+  }
+  // Solo mostrar selector si NO hay juego y estado es ready
+  else if (room.state === "ready" && !room.game) {
     selector.style.display = isP1 ? "block" : "none";
     waiting.style.display = isP1 ? "none" : "block";
   }
 
-  if (room.state === "playing") {
+  if (room.state === "playing" && room.game) {
     selector.style.display = "none";
     waiting.style.display = "none";
 

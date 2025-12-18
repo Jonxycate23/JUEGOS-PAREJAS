@@ -5,97 +5,347 @@
   <title>Sala de Juego 💕</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/hangman.css">
+  <link rel="stylesheet" href="css/loading-cube.css">
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #fff0f6;
-      padding: 20px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    button {
-      padding: 12px 20px;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Header de la sala */
+    .room-header {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .room-info-left {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .room-title {
+      font-size: 28px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .room-code-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .room-code-label {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    #room-code {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 12px;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    #status {
+      display: inline-block;
+      padding: 6px 15px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Botón cambiar juego mejorado */
+    .change-game-btn {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+      transition: all 0.3s ease;
+      z-index: 9998;
+      padding: 0;
+      margin: 0;
+    }
+
+    .change-game-btn:hover {
+      transform: scale(1.15) rotate(10deg);
+      box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
+    }
+
+    .change-game-btn:active {
+      transform: scale(1.05);
+    }
+
+    /* Contenedor de contenido */
+    .content-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Estilos de botones mejorados */
+    button:not(.change-game-btn):not(.chat-fab):not(.chat-btn-small):not(.emoji-btn):not(#chat-send) {
+      padding: 14px 28px;
       margin: 8px;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
       border: none;
-      border-radius: 8px;
-      background: #e74c3c;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      transition: background 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
-    button:hover:not(:disabled) {
-      background: #c0392b;
+    button:hover:not(:disabled):not(.change-game-btn):not(.chat-fab):not(.chat-btn-small):not(.emoji-btn):not(#chat-send) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active:not(:disabled):not(.change-game-btn):not(.chat-fab):not(.chat-btn-small):not(.emoji-btn):not(#chat-send) {
+      transform: translateY(0);
     }
 
     button:disabled {
-      background: #cccccc;
+      background: linear-gradient(135deg, #ccc 0%, #999 100%);
       cursor: not-allowed;
+      opacity: 0.6;
     }
 
-    input {
+    button[data-game] {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       font-size: 18px;
-      padding: 10px;
+      padding: 16px 32px;
+      margin: 12px;
+    }
+
+    button[disabled] {
+      background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+      color: #666;
+    }
+
+    /* Inputs mejorados */
+    input:not(#chat-input):not(#letter-input), textarea {
+      font-size: 16px;
+      padding: 12px 16px;
       text-align: center;
-      border: 2px solid #e74c3c;
-      border-radius: 8px;
-      margin: 5px;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      margin: 8px;
+      transition: all 0.3s;
+      outline: none;
+      background: white;
     }
 
-    #word-display {
-      font-size: 36px;
-      letter-spacing: 10px;
-      margin: 20px 0;
+    input:focus:not(#chat-input), textarea:focus {
+      border-color: #764ba2;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: scale(1.02);
+    }
+
+    #letter-input {
+      width: 80px;
+      font-size: 32px;
+      text-transform: uppercase;
       font-weight: bold;
-      color: #2c3e50;
+      text-align: center;
+      border: 3px solid #667eea;
+      border-radius: 12px;
+      padding: 12px;
     }
 
+    /* Display de palabra */
+    #word-display {
+      font-size: 48px;
+      letter-spacing: 12px;
+      margin: 25px 0;
+      font-weight: bold;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Secciones de juego */
     .game-section {
       background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      max-width: 700px;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
       margin: 20px auto;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .game-section h2 {
+      color: #667eea;
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* Estadísticas del juego */
+    .game-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 15px 25px;
+      border-radius: 15px;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .stat-value.danger {
+      color: #e74c3c;
     }
 
     #guessed-letters {
       color: #7f8c8d;
       font-size: 16px;
-      margin: 10px 0;
-    }
-
-    #result-area {
+      margin: 15px 0;
+      padding: 12px;
       background: #f8f9fa;
-      padding: 20px;
       border-radius: 10px;
+      min-height: 40px;
+    }
+
+    /* Área de resultado mejorada */
+    #result-area {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+      padding: 25px;
+      border-radius: 15px;
       margin: 20px 0;
+      border: 2px solid #ffcccc;
+      animation: bounceIn 0.6s ease;
     }
 
-    .change-game-btn {
-      background: #3498db;
-      position: fixed;
-      top: 20px;
-      right: 20px;
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
-    .change-game-btn:hover {
-      background: #2980b9;
+    #result-area h3 {
+      font-size: 36px;
+      margin-bottom: 15px;
     }
 
+    /* Mensajes del juego */
+    #hangman-msg {
+      font-size: 16px;
+      color: #666;
+      margin-top: 20px;
+      padding: 12px;
+      background: #f0f4ff;
+      border-radius: 10px;
+      border-left: 4px solid #667eea;
+    }
+
+    /* Modal mejorado */
     #game-selector-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(5px);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
+      z-index: 10000;
+      animation: fadeIn 0.3s ease;
     }
 
     #game-selector-modal.active {
@@ -104,110 +354,332 @@
 
     .modal-content {
       background: white;
-      padding: 30px;
-      border-radius: 15px;
+      padding: 40px;
+      border-radius: 25px;
       max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: scaleIn 0.3s ease;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-content h2 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 28px;
+    }
+
+    .modal-content p {
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    /* Challenge display mejorado */
+    .challenge-display {
+      background: linear-gradient(135deg, #ffe0e0 0%, #ffcccc 100%);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+      border: 2px solid #ffb3b3;
+    }
+
+    .challenge-display p {
+      margin: 8px 0;
+      line-height: 1.6;
+    }
+
+    .challenge-display strong {
+      color: #c0392b;
+      font-size: 18px;
+    }
+
+    /* Textarea mejorado */
+    textarea {
+      width: 100%;
+      max-width: 450px;
+      min-height: 100px;
+      font-size: 15px;
+      padding: 15px;
+      border-radius: 12px;
+      border: 2px solid #667eea;
+      resize: vertical;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+
+    /* Botón de siguiente ronda destacado */
+    #next-round-btn {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      font-size: 18px;
+      padding: 16px 32px;
+      margin-top: 20px;
+    }
+
+    #next-round-btn:hover {
+      box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .room-header {
+        padding: 20px;
+      }
+
+      .room-title {
+        font-size: 24px;
+      }
+
+      #room-code {
+        font-size: 20px;
+        padding: 6px 15px;
+      }
+
+      .game-section {
+        padding: 25px 20px;
+      }
+
+      .game-section h2 {
+        font-size: 26px;
+      }
+
+      #word-display {
+        font-size: 36px;
+        letter-spacing: 8px;
+      }
+
+      .change-game-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+        top: 15px;
+        right: 15px;
+      }
+
+      .game-stats {
+        gap: 15px;
+      }
+
+      .stat-box {
+        min-width: 100px;
+        padding: 12px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+
+      .room-header {
+        padding: 15px;
+      }
+
+      .room-title {
+        font-size: 20px;
+      }
+
+      #room-code {
+        font-size: 18px;
+        padding: 5px 12px;
+      }
+
+      .game-section {
+        padding: 20px 15px;
+      }
+
+      #word-display {
+        font-size: 28px;
+        letter-spacing: 6px;
+      }
+
+      button:not(.change-game-btn):not(.chat-fab):not(.chat-btn-small):not(.emoji-btn):not(#chat-send) {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      .change-game-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+        top: 12px;
+        right: 12px;
+      }
+
+      .modal-content {
+        padding: 25px 20px;
+      }
+    }
+
+    /* Animación para botones y elementos */
+    .bounceIn {
+      animation: bounceIn 0.6s ease;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>💖 Juegos para Parejas</h1>
-
-  <div id="room-info">
-    <h2>🔑 Código de la sala</h2>
-    <div id="room-code" style="font-size:32px;font-weight:bold"></div>
-    <p id="status">Cargando sala...</p>
+  <!-- Header de la sala -->
+  <div class="room-header">
+    <div class="room-info-left">
+      <div class="room-title">💖 Juegos para Parejas</div>
+      <div class="room-code-container">
+        <span class="room-code-label">🔑 Código de sala:</span>
+        <div id="room-code">-----</div>
+      </div>
+      <div id="status">Cargando sala...</div>
+    </div>
   </div>
 
   <!-- Botón para cambiar de juego -->
-  <button class="change-game-btn" id="open-game-selector">🎮 Cambiar Juego</button>
+  <button class="change-game-btn" id="open-game-selector" title="Cambiar Juego">🎮</button>
 
-  <!-- Modal selector de juegos -->
-  <div id="game-selector-modal">
-    <div class="modal-content">
-      <h2>🎮 Cambiar de juego</h2>
-      <p>Ambos jugadores verán el cambio inmediatamente</p>
-      <button data-game="hangman">🔤 Ahorcado</button>
-      <button disabled>🧠 Memoria (pronto)</button>
-      <button disabled>❌⭕ Totito (pronto)</button>
-      <button disabled>💬 Verdad o Reto (pronto)</button>
-      <br><br>
-      <button id="close-modal" style="background: #95a5a6;">Cancelar</button>
-    </div>
-  </div>
+  <!-- Contenedor principal -->
+  <div class="content-container">
 
-  <hr>
-
-  <!-- SELECTOR DE JUEGOS INICIAL -->
-  <div id="game-selector" style="display:none">
-    <div class="game-section">
-      <h2>🎮 Selecciona un juego</h2>
-      <button data-game="hangman">🔤 Ahorcado</button>
-      <button disabled>🧠 Memoria (pronto)</button>
-      <button disabled>❌⭕ Totito (pronto)</button>
-      <button disabled>💬 Verdad o Reto (pronto)</button>
-    </div>
-  </div>
-
-  <div id="waiting-game" style="display:none">
-    <div class="game-section">
-      <h2>⏳ Esperando que tu pareja elija el juego...</h2>
-    </div>
-  </div>
-
-  <!-- AHORCADO -->
-  <div id="hangman-area" style="display:none">
-    <div class="game-section">
-      <h2>🔤 Juego del Ahorcado</h2>
-
-      <!-- FASE: INGRESAR PALABRA Y RETO -->
-      <div id="set-word-area" style="display:none">
-        <p style="font-size: 18px; color: #e74c3c;">Escribe la palabra secreta y el reto 😈</p>
-        
-        <div style="margin: 20px 0;">
-          <input id="secret-word-input" type="password" placeholder="Palabra secreta" style="width: 250px;" />
-        </div>
-        
-        <div style="margin: 20px 0;">
-          <textarea id="challenge-input" placeholder="Escribe el reto que deberá cumplir si pierde... 😏" 
-                    style="width: 100%; max-width: 400px; min-height: 80px; font-size: 16px; padding: 10px; border-radius: 8px; border: 2px solid #e74c3c; resize: vertical;"></textarea>
-        </div>
-        
-        <button id="set-word-btn">Guardar y Empezar</button>
+    <!-- Modal selector de juegos -->
+    <div id="game-selector-modal">
+      <div class="modal-content">
+        <h2>🎮 Cambiar de juego</h2>
+        <p>Ambos jugadores verán el cambio inmediatamente</p>
+        <button data-game="hangman">🔤 Ahorcado</button>
+        <button disabled>🧠 Memoria (pronto)</button>
+        <button disabled>❌⭕ Totito (pronto)</button>
+        <button disabled>💬 Verdad o Reto (pronto)</button>
+        <br><br>
+        <button id="close-modal" style="background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);">✕ Cancelar</button>
       </div>
+    </div>
 
-      <!-- FASE: ADIVINAR -->
-      <div id="guess-area" style="display:none">
-        <div class="hangman-container">
-          <!-- Dibujo del muñeco -->
-          <div class="drawing" id="hangman-drawing"></div>
+    <!-- SELECTOR DE JUEGOS INICIAL -->
+    <div id="game-selector" style="display:none">
+      <div class="game-section">
+        <h2>🎮 Selecciona un juego</h2>
+        <button data-game="hangman">🔤 Ahorcado</button>
+        <button disabled>🧠 Memoria (pronto)</button>
+        <button disabled>❌⭕ Totito (pronto)</button>
+        <button disabled>💬 Verdad o Reto (pronto)</button>
+      </div>
+    </div>
 
-          <!-- Info del juego -->
-          <div class="game-info">
-            <div id="word-display">_ _ _ _</div>
-            <p style="font-size: 18px;">Errores: <span id="mistakes" style="color: #e74c3c; font-weight: bold;">0</span> / 6</p>
-            <p style="font-size: 14px; color: #7f8c8d;">Letras usadas:</p>
-            <p id="guessed-letters" style="font-weight: bold;">-</p>
+    <div id="waiting-game" style="display:none">
+      <div class="game-section">
+        <h2>⏳ Esperando que tu pareja elija el juego...</h2>
+        
+        <div class="loading-cube-container">
+          <div class="cube-wrapper">
+            <!-- Altura 1 -->
+            <div class="cube h1 w1 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h1 w1 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h1 w1 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h1 w2 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h1 w2 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h1 w2 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h1 w3 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h1 w3 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h1 w3 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            
+            <!-- Altura 2 -->
+            <div class="cube h2 w1 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h2 w1 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h2 w1 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h2 w2 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h2 w2 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h2 w2 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h2 w3 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h2 w3 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h2 w3 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            
+            <!-- Altura 3 -->
+            <div class="cube h3 w1 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h3 w1 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h3 w1 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h3 w2 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h3 w2 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h3 w2 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h3 w3 l1"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h3 w3 l2"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+            <div class="cube h3 w3 l3"><div class="face top"></div><div class="face left"></div><div class="face right"></div></div>
+          </div>
+        </div>
+        
+        <div class="loading-message">Tu pareja está seleccionando el juego</div>
+      </div>
+    </div>
+
+    <!-- AHORCADO -->
+    <div id="hangman-area" style="display:none">
+      <div class="game-section">
+        <h2>🔤 Juego del Ahorcado</h2>
+
+        <!-- FASE: INGRESAR PALABRA Y RETO -->
+        <div id="set-word-area" style="display:none">
+          <p style="font-size: 18px; color: #667eea; margin-bottom: 20px;">
+            ✍️ Escribe la palabra secreta y el reto para tu pareja
+          </p>
+          
+          <div style="margin: 20px 0;">
+            <input id="secret-word-input" type="password" placeholder="Palabra secreta" style="width: 280px; font-size: 18px;" />
+          </div>
+          
+          <div style="margin: 20px 0;">
+            <textarea id="challenge-input" placeholder="Escribe el reto que deberá cumplir si pierde... 😏" 
+                      style="width: 100%; max-width: 500px;"></textarea>
+          </div>
+          
+          <button id="set-word-btn">🚀 Guardar y Empezar</button>
+        </div>
+
+        <!-- FASE: ADIVINAR -->
+        <div id="guess-area" style="display:none">
+          <div class="hangman-container">
+            <!-- Dibujo del muñeco -->
+            <div class="drawing" id="hangman-drawing"></div>
+
+            <!-- Info del juego -->
+            <div class="game-info">
+              <div id="word-display">_ _ _ _</div>
+              
+              <div class="game-stats">
+                <div class="stat-box">
+                  <div class="stat-label">Errores</div>
+                  <div class="stat-value danger"><span id="mistakes">0</span> / 6</div>
+                </div>
+              </div>
+
+              <p style="font-size: 14px; color: #666; margin: 10px 0;">Letras usadas:</p>
+              <p id="guessed-letters">-</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px;">
+            <input id="letter-input" maxlength="1" placeholder="?" />
+            <br><br>
+            <button id="guess-btn">✅ Adivinar Letra</button>
           </div>
         </div>
 
-        <div style="margin-top: 30px;">
-          <input id="letter-input" maxlength="1" placeholder="?" style="width: 60px; font-size: 24px; text-transform: uppercase;" />
-          <br><br>
-          <button id="guess-btn">Adivinar Letra</button>
+        <!-- FASE: RESULTADO -->
+        <div id="result-area" style="display:none">
+          <div id="result-msg"></div>
+          <button id="next-round-btn" style="display:none;">🔄 Siguiente Ronda (Intercambiar Roles)</button>
         </div>
-      </div>
 
-      <!-- FASE: RESULTADO -->
-      <div id="result-area" style="display:none">
-        <div id="result-msg"></div>
-        <button id="next-round-btn" style="display:none; background: #27ae60; font-size: 18px;">🔄 Siguiente Ronda (Intercambiar Roles)</button>
+        <p id="hangman-msg"></p>
       </div>
-
-      <p id="hangman-msg" style="font-size: 16px; color: #7f8c8d; margin-top: 20px;"></p>
     </div>
+
   </div>
 
   <script type="module" src="./js/auth.js"></script>

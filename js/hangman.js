@@ -35,6 +35,7 @@ const roomRef = doc(db, "rooms", roomId);
 // Dibujar el muñeco del ahorcado
 function drawHangman(mistakes) {
   const parts = [
+    '<div class="rope"></div>',
     '<div class="head"></div>',
     '<div class="body"></div>',
     '<div class="arm left"></div>',
@@ -43,7 +44,13 @@ function drawHangman(mistakes) {
     '<div class="leg right"></div>'
   ];
   
-  hangmanDrawing.innerHTML = parts.slice(0, mistakes).join('');
+  // Siempre mostrar la cuerda (parte 0), luego agregar partes según errores
+  let html = parts[0]; // La cuerda
+  for (let i = 1; i <= mistakes && i < parts.length; i++) {
+    html += parts[i];
+  }
+  
+  hangmanDrawing.innerHTML = html;
 }
 
 // Escuchar cambios en la sala
