@@ -309,6 +309,23 @@ function attachChatStyles() {
       animation: slideIn 0.3s ease;
     }
 
+    .message-user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .message-avatar {
+      font-size: 20px;
+    }
+
+    .message-username {
+      font-size: 12px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
     @keyframes slideIn {
       from {
         opacity: 0;
@@ -455,11 +472,16 @@ async function sendMessage() {
   
   if (!message || !roomId) return;
 
+  // Obtener perfil del usuario
+  const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{"name":"Usuario","avatar":"👤"}');
+
   const roomRef = doc(db, "rooms", roomId);
   
   await updateDoc(roomRef, {
     chat: arrayUnion({
       uid: currentUser.uid,
+      name: userProfile.name,
+      avatar: userProfile.avatar,
       text: message,
       timestamp: Date.now()
     })
@@ -484,6 +506,12 @@ function renderMessages(messages) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `chat-message ${isMe ? 'me' : 'them'}`;
     messageDiv.innerHTML = `
+      ${!isMe ? `
+        <div class="message-user-info">
+          <span class="message-avatar">${msg.avatar || '👤'}</span>
+          <span class="message-username">${msg.name || 'Usuario'}</span>
+        </div>
+      ` : ''}
       <div class="chat-message-bubble">${msg.text}</div>
       <div class="chat-message-time">${time}</div>
     `;

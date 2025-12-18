@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💕 Juegos para Parejas - Lobby</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    /* Perfil de usuario */
+    .user-profile {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 1200px;
+      margin: 0 auto 30px auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .user-avatar:hover {
+      transform: scale(1.1);
+    }
+
+    .user-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .change-profile-btn {
+      padding: 10px 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    .change-profile-btn:hover {
+      background: #764ba2;
+      transform: translateY(-2px);
+    }
+
+    /* Container principal */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Cuadrícula de juegos */
+    .games-section {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .section-title {
+      text-align: center;
+      color: #667eea;
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    /* Tarjeta de juego */
+    .game-card {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .game-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+    }
+
+    .game-card.available {
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      border: 2px solid #667eea;
+    }
+
+    .game-card.available:hover {
+      border-color: #764ba2;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8ecff 100%);
+    }
+
+    .game-card.unavailable {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .game-card.unavailable:hover {
+      transform: none;
+    }
+
+    .game-icon {
+      font-size: 64px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .game-card.unavailable .game-icon {
+      filter: grayscale(100%) opacity(0.5);
+    }
+
+    .game-name {
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .game-description {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+      min-height: 40px;
+    }
+
+    .game-timer {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #ffe0e0;
+      color: #e74c3c;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .game-status {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .status-available {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-soon {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    /* Modal de perfil */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-title {
+      text-align: center;
+      color: #667eea;
+      font-size: 28px;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .avatar-option {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 3px solid transparent;
+    }
+
+    .avatar-option:hover {
+      transform: scale(1.1);
+      background: #e8ecff;
+    }
+
+    .avatar-option.selected {
+      border-color: #667eea;
+      background: #f0f4ff;
+      transform: scale(1.15);
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-cancel {
+      background: #e0e0e0;
+      color: #666;
+    }
+
+    .btn-cancel:hover {
+      background: #d0d0d0;
+    }
+
+    /* Sección de sala */
+    .room-section {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      margin-top: 30px;
+    }
+
+    .room-actions {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .room-card {
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8ecff 100%);
+      padding: 25px;
+      border-radius: 15px;
+      flex: 1;
+      min-width: 280px;
+      text-align: center;
+    }
+
+    .room-card h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+
+    .room-card input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .room-card button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .room-card button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 32px;
+      }
+
+      .games-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+      }
+
+      .game-icon {
+        font-size: 48px;
+      }
+
+      .game-name {
+        font-size: 18px;
+      }
+
+      .game-description {
+        font-size: 12px;
+      }
+
+      .avatar-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .user-profile {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>💕 Juegos para Parejas</h1>
+    <p>Diversión, retos y conexión en cada juego</p>
+  </div>
+
+  <!-- Perfil de usuario -->
+  <div class="user-profile">
+    <div class="user-info">
+      <div class="user-avatar" id="current-avatar">👤</div>
+      <div>
+        <div class="user-name" id="current-name">Usuario</div>
+        <small style="color: #999;">Click en tu avatar para cambiar</small>
+      </div>
+    </div>
+    <button class="change-profile-btn" id="change-profile-btn">✏️ Editar Perfil</button>
+  </div>
+
+  <!-- Container principal -->
+  <div class="container">
+    
+    <!-- Sección de juegos -->
+    <div class="games-section">
+      <h2 class="section-title">🎮 Elige tu Juego</h2>
+      
+      <div class="games-grid" id="games-grid">
+        <!-- Los juegos se cargarán aquí dinámicamente -->
+      </div>
+    </div>
+
+    <!-- Sección de sala -->
+    <div class="room-section">
+      <h2 class="section-title">🚪 Gestiona tu Sala</h2>
+      <div class="room-actions">
+        <div class="room-card">
+          <h3>🆕 Crear Sala Nueva</h3>
+          <p style="color: #666; margin-bottom: 15px;">Crea una sala y comparte el código con tu pareja</p>
+          <button id="create-room-btn">Crear Sala</button>
+        </div>
+        
+        <div class="room-card">
+          <h3>🔑 Unirse a Sala</h3>
+          <p style="color: #666; margin-bottom: 15px;">Ingresa el código de la sala</p>
+          <input type="text" id="room-code-input" placeholder="CÓDIGO" maxlength="5">
+          <button id="join-room-btn">Unirse</button>
+          <p id="room-message" style="color: #e74c3c; margin-top: 10px; min-height: 20px;"></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal de perfil -->
+  <div class="modal" id="profile-modal">
+    <div class="modal-content">
+      <h2 class="modal-title">✏️ Edita tu Perfil</h2>
+      
+      <div class="form-group">
+        <label>Tu Nombre:</label>
+        <input type="text" id="name-input" placeholder="Escribe tu nombre" maxlength="20">
+      </div>
+
+      <div class="form-group">
+        <label>Elige tu Avatar:</label>
+        <div class="avatar-grid" id="avatar-grid">
+          <!-- Avatares se cargarán aquí -->
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn-cancel" id="cancel-btn">Cancelar</button>
+        <button class="btn-save" id="save-profile-btn">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/lobby.js"></script>
+
+</body>
+</html>
