@@ -697,13 +697,44 @@
             </div>
 
             <div id="tictactoe-challenge-options" style="display: block;">
-              <p style="text-align: center; color: #777; margin-bottom: 15px;">Nivel de retos:</p>
-              <div class="tictactoe-level-selector">
-                <button class="tictactoe-level-btn level-option" data-level="soft">😊 Suave</button>
-                <button class="tictactoe-level-btn level-option" data-level="funny">😂 Gracioso</button>
-                <button class="tictactoe-level-btn level-option selected" data-level="medium">😏 Picante</button>
-                <button class="tictactoe-level-btn level-option" data-level="spicy">🔥 Ardiente</button>
-                <button class="tictactoe-level-btn level-option" data-level="ardiente">🌶️ HOT</button>
+              <!-- Selector de tipo de retos -->
+              <div style="margin: 20px 0;">
+                <p style="text-align: center; color: #777; margin-bottom: 15px;">Tipo de retos:</p>
+                <div class="tictactoe-level-selector">
+                  <button class="tictactoe-challenge-type-btn level-option selected" data-type="system">
+                    🎲 Retos del Sistema
+                  </button>
+                  <button class="tictactoe-challenge-type-btn level-option" data-type="custom">
+                    ✏️ Retos Personalizados
+                  </button>
+                </div>
+              </div>
+
+              <!-- Niveles de retos del sistema -->
+              <div id="tictactoe-system-levels" style="display: block;">
+                <p style="text-align: center; color: #777; margin-bottom: 15px;">Nivel de retos:</p>
+                <div class="tictactoe-level-selector">
+                  <button class="tictactoe-level-btn level-option" data-level="soft">😊 Suave</button>
+                  <button class="tictactoe-level-btn level-option" data-level="funny">😂 Gracioso</button>
+                  <button class="tictactoe-level-btn level-option selected" data-level="medium">😏 Picante</button>
+                  <button class="tictactoe-level-btn level-option" data-level="spicy">🔥 Ardiente</button>
+                  <button class="tictactoe-level-btn level-option" data-level="ardiente">🌶️ HOT</button>
+                </div>
+              </div>
+
+              <!-- Input de retos personalizados -->
+              <div id="tictactoe-custom-challenges" style="display: none; margin-top: 20px;">
+                <p style="text-align: center; color: #777; margin-bottom: 10px;">
+                  Escribe tus retos (uno por línea):
+                </p>
+                <textarea 
+                  id="tictactoe-custom-input" 
+                  placeholder="Ejemplo:&#10;Canta una canción&#10;Baila por 30 segundos&#10;Haz 10 flexiones"
+                  style="width: 100%; min-height: 150px; padding: 15px; border: 2px solid #667eea; border-radius: 12px; font-size: 14px; font-family: Arial; resize: vertical;"
+                ></textarea>
+                <p style="font-size: 12px; color: #999; margin-top: 10px;">
+                  💡 Tip: Escribe varios retos para que se elijan al azar
+                </p>
               </div>
             </div>
           </div>

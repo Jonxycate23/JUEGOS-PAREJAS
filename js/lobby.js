@@ -365,8 +365,10 @@ function getInitialGameData(gameId) {
       currentPlayer: 'p1',
       board: Array(9).fill(null),
       winner: null,
-      withChallenges: true,
+      withChallenges: false,
       challengeLevel: 'medium',
+      customChallenges: [],
+      challengeType: 'system',
       configured: false
     },
     // Agregar más juegos aquí cuando estén listos

@@ -65,8 +65,10 @@ function getInitialGameData(gameId) {
       board: Array(9).fill(null),
       winner: null,
       winningCells: [],
-      withChallenges: true,
+      withChallenges: false,
       challengeLevel: "medium",
+      customChallenges: [],
+      challengeType: "system",
       configured: false
     }
   };

@@ -248,6 +248,27 @@ if (challengeToggle) {
   });
 }
 
+// Botones de tipo de reto (Sistema vs Personalizado)
+const challengeTypeButtons = document.querySelectorAll('.tictactoe-challenge-type-btn');
+const systemLevelsDiv = document.getElementById('tictactoe-system-levels');
+const customChallengesDiv = document.getElementById('tictactoe-custom-challenges');
+
+challengeTypeButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    challengeTypeButtons.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    
+    const type = btn.dataset.type;
+    if (type === 'system') {
+      systemLevelsDiv.style.display = 'block';
+      customChallengesDiv.style.display = 'none';
+    } else {
+      systemLevelsDiv.style.display = 'none';
+      customChallengesDiv.style.display = 'block';
+    }
+  });
+});
+
 // Botones de nivel
 levelButtons.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -342,9 +363,40 @@ onSnapshot(roomRef, (snap) => {
 // ==================== FUNCIONES ====================
 
 async function startGame() {
-  const withChallenges = challengeToggle?.classList.contains('active') || true;
-  const selectedLevel = document.querySelector('.tictactoe-level-btn.selected');
-  const challengeLevel = selectedLevel?.dataset.level || 'medium';
+  const withChallenges = challengeToggle?.classList.contains('active') || false;
+  
+  let challengeLevel = 'medium';
+  let customChallenges = [];
+  
+  // Determinar si es sistema o personalizado
+  const selectedTypeBtn = document.querySelector('.tictactoe-challenge-type-btn.selected');
+  const challengeType = selectedTypeBtn?.dataset.type || 'system';
+  
+  if (challengeType === 'system') {
+    // Retos del sistema
+    const selectedLevelBtn = document.querySelector('.tictactoe-level-btn.selected');
+    challengeLevel = selectedLevelBtn?.dataset.level || 'medium';
+  } else {
+    // Retos personalizados
+    const customInput = document.getElementById('tictactoe-custom-input');
+    const customText = customInput?.value.trim() || '';
+    
+    if (withChallenges && customText) {
+      // Separar por líneas y filtrar vacías
+      customChallenges = customText
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+      
+      if (customChallenges.length === 0) {
+        alert('⚠️ Debes escribir al menos un reto personalizado');
+        return;
+      }
+    } else if (withChallenges && !customText) {
+      alert('⚠️ Debes escribir tus retos personalizados o elegir retos del sistema');
+      return;
+    }
+  }
 
   await updateDoc(roomRef, {
     "gameData.tictactoe": {
@@ -355,6 +407,8 @@ async function startGame() {
       winningCells: [],
       withChallenges,
       challengeLevel,
+      customChallenges,
+      challengeType,
       configured: true
     }
   });
@@ -441,7 +495,7 @@ function updatePlayerInfo(currentPlayer) {
 }
 
 async function showResult(data, players, isP1) {
-  const { winner, winningCells, withChallenges, challengeLevel } = data;
+  const { winner, winningCells, withChallenges, challengeLevel, customChallenges } = data;
 
   // Resaltar celdas ganadoras
   if (winningCells && winningCells.length > 0) {
@@ -467,9 +521,18 @@ async function showResult(data, players, isP1) {
     if (resultTitleEl) resultTitleEl.textContent = iWon ? "¡Ganaste!" : "Perdiste";
     if (resultMessageEl) resultMessageEl.textContent = `${winnerName} gana esta ronda`;
 
-    // Mostrar reto si está activado
-    if (withChallenges && challengeBoxEl && challengeTextEl) {
-      const challenge = getRandomChallenge(challengeLevel);
+    // SOLO mostrar reto si withChallenges es true Y el usuario perdió
+    if (withChallenges && !iWon && challengeBoxEl && challengeTextEl) {
+      let challenge;
+      
+      // Si hay retos personalizados, usar esos
+      if (customChallenges && customChallenges.length > 0) {
+        challenge = customChallenges[Math.floor(Math.random() * customChallenges.length)];
+      } else {
+        // Si no, usar retos del sistema según el nivel
+        challenge = getRandomChallenge(challengeLevel);
+      }
+      
       challengeBoxEl.style.display = "block";
       challengeTextEl.innerHTML = `
         <strong>${loserName}</strong>, tu reto es:<br><br>
@@ -499,6 +562,8 @@ async function resetGame() {
       winningCells: [],
       withChallenges: data.withChallenges,
       challengeLevel: data.challengeLevel,
+      customChallenges: data.customChallenges || [],
+      challengeType: data.challengeType || 'system',
       configured: true
     }
   });
