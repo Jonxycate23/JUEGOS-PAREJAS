@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/hangman.css">
   <link rel="stylesheet" href="css/loading-cube.css">
+  <link rel="stylesheet" href="css/tictactoe.css">
 
   <style>
     * {
@@ -554,8 +555,8 @@
         <h2>🎮 Cambiar de juego</h2>
         <p>Ambos jugadores verán el cambio inmediatamente</p>
         <button data-game="hangman">🔤 Ahorcado</button>
+        <button data-game="tictactoe">❌⭕ Totito</button>
         <button disabled>🧠 Memoria (pronto)</button>
-        <button disabled>❌⭕ Totito (pronto)</button>
         <button disabled>💬 Verdad o Reto (pronto)</button>
         <br><br>
         <button id="close-modal" style="background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);">✕ Cancelar</button>
@@ -567,8 +568,8 @@
       <div class="game-section">
         <h2>🎮 Selecciona un juego</h2>
         <button data-game="hangman">🔤 Ahorcado</button>
+        <button data-game="tictactoe">❌⭕ Totito</button>
         <button disabled>🧠 Memoria (pronto)</button>
-        <button disabled>❌⭕ Totito (pronto)</button>
         <button disabled>💬 Verdad o Reto (pronto)</button>
       </div>
     </div>
@@ -680,12 +681,107 @@
       </div>
     </div>
 
+    <!-- TOTITO / TIC-TAC-TOE -->
+    <div id="tictactoe-area" style="display:none">
+      <div class="game-section">
+        <h2 class="game-title">❌⭕ Totito - Tres en Caos</h2>
+
+        <!-- CONFIGURACIÓN -->
+        <div id="tictactoe-config-area" style="display:none">
+          <div class="tictactoe-config">
+            <h3 class="tictactoe-config-title">⚙️ Configuración del Juego</h3>
+            
+            <div class="tictactoe-toggle">
+              <span class="tictactoe-toggle-label">🔥 Jugar con Retos</span>
+              <div class="toggle-switch active" id="tictactoe-challenge-toggle"></div>
+            </div>
+
+            <div id="tictactoe-challenge-options" style="display: block;">
+              <p style="text-align: center; color: #777; margin-bottom: 15px;">Nivel de retos:</p>
+              <div class="tictactoe-level-selector">
+                <button class="tictactoe-level-btn level-option" data-level="soft">😊 Suave</button>
+                <button class="tictactoe-level-btn level-option" data-level="funny">😂 Gracioso</button>
+                <button class="tictactoe-level-btn level-option selected" data-level="medium">😏 Picante</button>
+                <button class="tictactoe-level-btn level-option" data-level="spicy">🔥 Ardiente</button>
+                <button class="tictactoe-level-btn level-option" data-level="ardiente">🌶️ HOT</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px;">
+            <button id="tictactoe-start-btn" class="tictactoe-btn tictactoe-btn-primary">
+              🎮 Comenzar Juego
+            </button>
+          </div>
+        </div>
+
+        <!-- JUEGO -->
+        <div id="tictactoe-game-area" style="display:none">
+          <div class="tictactoe-header">
+            <div class="tictactoe-player active" id="tictactoe-p1-info">
+              <div class="tictactoe-player-avatar" id="tictactoe-p1-avatar">😎</div>
+              <div class="tictactoe-player-name" id="tictactoe-p1-name">Jugador 1</div>
+              <div class="tictactoe-player-symbol">❌</div>
+            </div>
+
+            <div class="tictactoe-player" id="tictactoe-p2-info">
+              <div class="tictactoe-player-avatar" id="tictactoe-p2-avatar">😍</div>
+              <div class="tictactoe-player-name" id="tictactoe-p2-name">Jugador 2</div>
+              <div class="tictactoe-player-symbol">⭕</div>
+            </div>
+          </div>
+
+          <div class="tictactoe-turn-indicator" id="tictactoe-turn-indicator">
+            🎯 Turno de Jugador 1 (❌)
+          </div>
+
+          <div class="tictactoe-board">
+            <div class="tictactoe-cell" data-index="0"></div>
+            <div class="tictactoe-cell" data-index="1"></div>
+            <div class="tictactoe-cell" data-index="2"></div>
+            <div class="tictactoe-cell" data-index="3"></div>
+            <div class="tictactoe-cell" data-index="4"></div>
+            <div class="tictactoe-cell" data-index="5"></div>
+            <div class="tictactoe-cell" data-index="6"></div>
+            <div class="tictactoe-cell" data-index="7"></div>
+            <div class="tictactoe-cell" data-index="8"></div>
+          </div>
+        </div>
+
+        <!-- RESULTADO -->
+        <div id="tictactoe-result-area" style="display:none">
+          <div class="tictactoe-result">
+            <div class="tictactoe-result-icon" id="tictactoe-result-icon">🎉</div>
+            <div class="tictactoe-result-title" id="tictactoe-result-title">¡Ganador!</div>
+            <div class="tictactoe-result-message" id="tictactoe-result-message">Mensaje del resultado</div>
+          </div>
+
+          <div class="tictactoe-challenge-box" id="tictactoe-challenge-box" style="display: none;">
+            <div class="tictactoe-challenge-title">😈 RETO PARA EL PERDEDOR</div>
+            <div class="tictactoe-challenge-text" id="tictactoe-challenge-text">
+              El reto aparecerá aquí
+            </div>
+          </div>
+
+          <div class="tictactoe-buttons">
+            <button id="tictactoe-next-round-btn" class="tictactoe-btn tictactoe-btn-primary" style="display:none">
+              🔄 Siguiente Ronda
+            </button>
+            <button id="tictactoe-back-to-config-btn" class="tictactoe-btn tictactoe-btn-secondary" style="display:none">
+              ⚙️ Cambiar Configuración
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script type="module" src="./js/auth.js"></script>
   <script type="module" src="./js/room-listener.js"></script>
   <script type="module" src="./js/game-selector.js"></script>
   <script type="module" src="./js/hangman.js"></script>
+  <script type="module" src="./js/tictactoe.js"></script>
   
   <script type="module">
     // Inicializar chat

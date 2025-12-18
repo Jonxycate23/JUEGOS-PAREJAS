@@ -13,6 +13,7 @@ const statusEl = document.getElementById("status");
 const selector = document.getElementById("game-selector");
 const waiting = document.getElementById("waiting-game");
 const hangmanArea = document.getElementById("hangman-area");
+const tictactoeArea = document.getElementById("tictactoe-area");
 
 const params = new URLSearchParams(window.location.search);
 const roomId = params.get("room");
@@ -54,6 +55,12 @@ onSnapshot(roomRef, (snap) => {
 
     if (room.game === "hangman") {
       hangmanArea.style.display = "block";
+      if (tictactoeArea) tictactoeArea.style.display = "none";
+    }
+
+    if (room.game === "tictactoe") {
+      if (tictactoeArea) tictactoeArea.style.display = "block";
+      hangmanArea.style.display = "none";
     }
   }
 });

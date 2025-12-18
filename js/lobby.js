@@ -34,7 +34,7 @@ const GAMES = [
     icon: '❌⭕',
     description: 'Tres en Caos - Tic-Tac-Toe con retos',
     timer: '⏱️ 15-20 seg',
-    available: false
+    available: true
   },
   {
     id: 'truth-dare',
@@ -359,6 +359,15 @@ function getInitialGameData(gameId) {
       challenge: '',
       timerActive: false,
       timeLeft: 15
+    },
+    tictactoe: {
+      phase: 'playing',
+      currentPlayer: 'p1',
+      board: Array(9).fill(null),
+      winner: null,
+      withChallenges: true,
+      challengeLevel: 'medium',
+      configured: false
     },
     // Agregar más juegos aquí cuando estén listos
   };

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 Totito - Tres en Caos</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: white;
+      border-radius: 25px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #999;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    /* SETUP SCREEN */
+    .setup-screen {
+      text-align: center;
+    }
+
+    .setup-section {
+      margin: 25px 0;
+    }
+
+    .setup-section h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      max-width: 300px;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      text-align: center;
+      margin: 10px 0;
+      transition: all 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #764ba2;
+      box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
+    }
+
+    .challenge-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .challenge-toggle label {
+      font-size: 18px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .toggle-switch {
+      width: 60px;
+      height: 30px;
+      background: #ddd;
+      border-radius: 30px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-switch.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left 0.3s;
+    }
+
+    .toggle-switch.active::after {
+      left: 32px;
+    }
+
+    .challenge-level {
+      display: none;
+      margin-top: 15px;
+    }
+
+    .challenge-level.active {
+      display: block;
+    }
+
+    .level-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .level-btn {
+      padding: 12px 24px;
+      border: 2px solid #667eea;
+      background: white;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .level-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .level-btn.selected {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #764ba2;
+    }
+
+    .start-btn {
+      padding: 18px 40px;
+      font-size: 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      cursor: pointer;
+      margin-top: 30px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    /* GAME SCREEN */
+    .game-screen {
+      display: none;
+    }
+
+    .game-screen.active {
+      display: block;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .player-info {
+      flex: 1;
+      text-align: center;
+      padding: 15px;
+      border-radius: 15px;
+      transition: all 0.3s;
+    }
+
+    .player-info.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .player-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .player-symbol {
+      font-size: 36px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+      aspect-ratio: 1;
+    }
+
+    .cell {
+      background: #f0f0f0;
+      border: 3px solid #667eea;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cell::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(102, 126, 234, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
+    }
+
+    .cell:hover:not(.taken)::before {
+      width: 100%;
+      height: 100%;
+    }
+
+    .cell:hover:not(.taken) {
+      transform: scale(1.05);
+      border-color: #764ba2;
+    }
+
+    .cell.taken {
+      cursor: not-allowed;
+      background: white;
+    }
+
+    .cell.winning {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+      animation: winPulse 0.6s ease-in-out;
+    }
+
+    @keyframes winPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .turn-indicator {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #667eea;
+      margin: 20px 0;
+      padding: 15px;
+      background: #f0f9ff;
+      border-radius: 12px;
+    }
+
+    /* RESULT SCREEN */
+    .result-screen {
+      display: none;
+      text-align: center;
+      animation: bounceIn 0.6s ease;
+    }
+
+    .result-screen.active {
+      display: block;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .result-title {
+      font-size: 48px;
+      margin: 20px 0;
+    }
+
+    .result-message {
+      font-size: 24px;
+      color: #555;
+      margin: 15px 0;
+    }
+
+    .challenge-box {
+      background: linear-gradient(135deg, #ffe0e0 0%, #ffc0c0 100%);
+      border: 3px solid #e74c3c;
+      border-radius: 20px;
+      padding: 30px;
+      margin: 30px 0;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .challenge-title {
+      font-size: 28px;
+      color: #e74c3c;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .challenge-text {
+      font-size: 22px;
+      color: #c0392b;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #95a5a6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #7f8c8d;
+      transform: translateY(-2px);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      .cell {
+        font-size: 48px;
+      }
+
+      .player-symbol {
+        font-size: 28px;
+      }
+
+      .result-title {
+        font-size: 36px;
+      }
+
+      .challenge-text {
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .cell {
+        font-size: 36px;
+        border-width: 2px;
+      }
+
+      .board {
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>❌⭕ Totito</h1>
+    <p class="subtitle">Tres en Caos - Juego Local para Parejas</p>
+
+    <!-- SETUP SCREEN -->
+    <div class="setup-screen" id="setup-screen">
+      <div class="setup-section">
+        <h3>👤 Jugador 1 (❌)</h3>
+        <input type="text" id="player1-name" placeholder="Nombre del Jugador 1" value="Jugador 1">
+      </div>
+
+      <div class="setup-section">
+        <h3>👤 Jugador 2 (⭕)</h3>
+        <input type="text" id="player2-name" placeholder="Nombre del Jugador 2" value="Jugador 2">
+      </div>
+
+      <div class="setup-section">
+        <div class="challenge-toggle">
+          <label>🔥 Jugar con Retos</label>
+          <div class="toggle-switch" id="challenge-toggle"></div>
+        </div>
+
+        <div class="challenge-level" id="challenge-level">
+          <p style="color: #777; margin-bottom: 15px;">Selecciona el nivel de retos:</p>
+          <div class="level-buttons">
+            <button class="level-btn selected" data-level="soft">😊 Suave</button>
+            <button class="level-btn" data-level="medium">😏 Picante</button>
+            <button class="level-btn" data-level="spicy">🔥 Ardiente</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="start-btn" id="start-game-btn">🎮 Comenzar Juego</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div class="game-screen" id="game-screen">
+      <div class="game-header">
+        <div class="player-info active" id="player1-info">
+          <div class="player-name" id="p1-name-display">Jugador 1</div>
+          <div class="player-symbol">❌</div>
+        </div>
+
+        <div class="player-info" id="player2-info">
+          <div class="player-name" id="p2-name-display">Jugador 2</div>
+          <div class="player-symbol">⭕</div>
+        </div>
+      </div>
+
+      <div class="turn-indicator" id="turn-indicator">
+        🎯 Turno de Jugador 1 (❌)
+      </div>
+
+      <div class="board" id="board">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+      </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div class="result-screen" id="result-screen">
+      <div class="result-title" id="result-title">🎉</div>
+      <div class="result-message" id="result-message">¡Ganador!</div>
+
+      <div class="challenge-box" id="challenge-box" style="display: none;">
+        <div class="challenge-title">😈 RETO PARA EL PERDEDOR</div>
+        <div class="challenge-text" id="challenge-text">Tu reto aparecerá aquí</div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="play-again-btn">🔄 Jugar de Nuevo</button>
+        <button class="btn btn-secondary" id="change-settings-btn">⚙️ Cambiar Configuración</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== CONFIGURACIÓN ====================
+    
+    const CHALLENGES = {
+      soft: [
+        "Canta una canción romántica",
+        "Di 3 cosas que amas de tu pareja",
+        "Haz 10 sentadillas",
+        "Cuenta un chiste",
+        "Baila durante 30 segundos",
+        "Imita a tu pareja",
+        "Di un cumplido sincero",
+        "Haz una pose graciosa para foto",
+        "Cuenta un secreto vergonzoso",
+        "Prepara un snack para tu pareja"
+      ],
+      medium: [
+        "Dale un masaje de 2 minutos",
+        "Quítate una prenda de ropa",
+        "Beso apasionado por 10 segundos",
+        "Susurra algo picante al oído",
+        "Baile sensual para tu pareja",
+        "3 besos donde tu pareja elija",
+        "Haz una confesión atrevida",
+        "Deja que tu pareja te dé 5 nalgadas",
+        "Lame algo dulce del cuerpo de tu pareja",
+        "Haz un strip tease corto",
+        "Di tu fantasía más secreta",
+        "10 flexiones mientras tu pareja te observa"
+      ],
+      spicy: [
+        "Quítate 2 prendas de ropa",
+        "Beso francés intenso por 30 segundos",
+        "Tu pareja te quita una prenda",
+        "Masaje sensual en una zona que elija tu pareja",
+        "Juego de manos atrevido por 1 minuto",
+        "Beso en cualquier parte del cuerpo (tu pareja elige)",
+        "Cuenta tu fantasía más HOT",
+        "Tu pareja te hace cosquillas donde quiera por 30 seg",
+        "Baile erótico solo para tu pareja",
+        "Deja que tu pareja te vende los ojos y te bese donde quiera",
+        "Abrazo sin ropa por 30 segundos",
+        "Haz lo que tu pareja te pida (dentro del respeto)"
+      ]
+    };
+
+    // ==================== ESTADO DEL JUEGO ====================
+    
+    let gameState = {
+      player1Name: 'Jugador 1',
+      player2Name: 'Jugador 2',
+      withChallenges: false,
+      challengeLevel: 'soft',
+      currentPlayer: 'X', // X o O
+      board: Array(9).fill(null),
+      gameOver: false,
+      winner: null
+    };
+
+    const winningCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
+      [0, 4, 8], [2, 4, 6]             // Diagonales
+    ];
+
+    // ==================== ELEMENTOS DEL DOM ====================
+    
+    const setupScreen = document.getElementById('setup-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const resultScreen = document.getElementById('result-screen');
+
+    const player1Input = document.getElementById('player1-name');
+    const player2Input = document.getElementById('player2-name');
+    const challengeToggle = document.getElementById('challenge-toggle');
+    const challengeLevel = document.getElementById('challenge-level');
+    const levelButtons = document.querySelectorAll('.level-btn');
+    const startGameBtn = document.getElementById('start-game-btn');
+
+    const p1NameDisplay = document.getElementById('p1-name-display');
+    const p2NameDisplay = document.getElementById('p2-name-display');
+    const player1Info = document.getElementById('player1-info');
+    const player2Info = document.getElementById('player2-info');
+    const turnIndicator = document.getElementById('turn-indicator');
+    const board = document.getElementById('board');
+    const cells = document.querySelectorAll('.cell');
+
+    const resultTitle = document.getElementById('result-title');
+    const resultMessage = document.getElementById('result-message');
+    const challengeBox = document.getElementById('challenge-box');
+    const challengeText = document.getElementById('challenge-text');
+    const playAgainBtn = document.getElementById('play-again-btn');
+    const changeSettingsBtn = document.getElementById('change-settings-btn');
+
+    // ==================== SETUP LISTENERS ====================
+    
+    challengeToggle.addEventListener('click', () => {
+      challengeToggle.classList.toggle('active');
+      gameState.withChallenges = challengeToggle.classList.contains('active');
+      
+      if (gameState.withChallenges) {
+        challengeLevel.classList.add('active');
+      } else {
+        challengeLevel.classList.remove('active');
+      }
+    });
+
+    levelButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        levelButtons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        gameState.challengeLevel = btn.dataset.level;
+      });
+    });
+
+    startGameBtn.addEventListener('click', startGame);
+    playAgainBtn.addEventListener('click', resetGame);
+    changeSettingsBtn.addEventListener('click', backToSetup);
+
+    // ==================== GAME LOGIC ====================
+    
+    function startGame() {
+      const p1Name = player1Input.value.trim() || 'Jugador 1';
+      const p2Name = player2Input.value.trim() || 'Jugador 2';
+
+      gameState.player1Name = p1Name;
+      gameState.player2Name = p2Name;
+      gameState.currentPlayer = 'X';
+      gameState.board = Array(9).fill(null);
+      gameState.gameOver = false;
+      gameState.winner = null;
+
+      p1NameDisplay.textContent = p1Name;
+      p2NameDisplay.textContent = p2Name;
+
+      setupScreen.style.display = 'none';
+      gameScreen.classList.add('active');
+      resultScreen.classList.remove('active');
+
+      updateTurnIndicator();
+      renderBoard();
+    }
+
+    function renderBoard() {
+      cells.forEach((cell, index) => {
+        cell.textContent = gameState.board[index] || '';
+        cell.classList.remove('taken', 'winning');
+        
+        if (gameState.board[index]) {
+          cell.classList.add('taken');
+        }
+      });
+
+      cells.forEach((cell, index) => {
+        cell.onclick = () => makeMove(index);
+      });
+    }
+
+    function makeMove(index) {
+      if (gameState.gameOver || gameState.board[index]) return;
+
+      gameState.board[index] = gameState.currentPlayer;
+      renderBoard();
+
+      if (checkWinner()) {
+        endGame(gameState.currentPlayer);
+      } else if (gameState.board.every(cell => cell !== null)) {
+        endGame(null); // Empate
+      } else {
+        gameState.currentPlayer = gameState.currentPlayer === 'X' ? 'O' : 'X';
+        updateTurnIndicator();
+      }
+    }
+
+    function checkWinner() {
+      for (let combination of winningCombinations) {
+        const [a, b, c] = combination;
+        if (
+          gameState.board[a] &&
+          gameState.board[a] === gameState.board[b] &&
+          gameState.board[a] === gameState.board[c]
+        ) {
+          // Resaltar celdas ganadoras
+          cells[a].classList.add('winning');
+          cells[b].classList.add('winning');
+          cells[c].classList.add('winning');
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function updateTurnIndicator() {
+      const currentName = gameState.currentPlayer === 'X' 
+        ? gameState.player1Name 
+        : gameState.player2Name;
+      const symbol = gameState.currentPlayer === 'X' ? '❌' : '⭕';
+
+      turnIndicator.textContent = `🎯 Turno de ${currentName} (${symbol})`;
+
+      // Actualizar UI de jugadores
+      if (gameState.currentPlayer === 'X') {
+        player1Info.classList.add('active');
+        player2Info.classList.remove('active');
+      } else {
+        player1Info.classList.remove('active');
+        player2Info.classList.add('active');
+      }
+    }
+
+    function endGame(winner) {
+      gameState.gameOver = true;
+      gameState.winner = winner;
+
+      setTimeout(() => {
+        gameScreen.classList.remove('active');
+        resultScreen.classList.add('active');
+        showResults();
+      }, 1000);
+    }
+
+    function showResults() {
+      if (gameState.winner === null) {
+        // Empate
+        resultTitle.textContent = '🤝';
+        resultMessage.textContent = '¡Empate! Ambos son ganadores';
+        challengeBox.style.display = 'none';
+      } else {
+        // Alguien ganó
+        const winnerName = gameState.winner === 'X' 
+          ? gameState.player1Name 
+          : gameState.player2Name;
+        const loserName = gameState.winner === 'X' 
+          ? gameState.player2Name 
+          : gameState.player1Name;
+
+        resultTitle.textContent = '🎉';
+        resultMessage.textContent = `¡${winnerName} gana!`;
+
+        // Mostrar reto si está activado
+        if (gameState.withChallenges) {
+          const challenge = getRandomChallenge();
+          challengeBox.style.display = 'block';
+          challengeText.textContent = `${loserName}: ${challenge}`;
+        } else {
+          challengeBox.style.display = 'none';
+        }
+      }
+    }
+
+    function getRandomChallenge() {
+      const challenges = CHALLENGES[gameState.challengeLevel];
+      return challenges[Math.floor(Math.random() * challenges.length)];
+    }
+
+    function resetGame() {
+      gameState.board = Array(9).fill(null);
+      gameState.currentPlayer = 'X';
+      gameState.gameOver = false;
+      gameState.winner = null;
+
+      resultScreen.classList.remove('active');
+      gameScreen.classList.add('active');
+
+      updateTurnIndicator();
+      renderBoard();
+    }
+
+    function backToSetup() {
+      resultScreen.classList.remove('active');
+      gameScreen.classList.remove('active');
+      setupScreen.style.display = 'block';
+    }
+
+    // ==================== INICIALIZACIÓN ====================
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('🎮 Totito - Tres en Caos cargado');
+    });
+  </script>
+
+</body>
+</html>
