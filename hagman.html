@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔤 Ahorcado - Retolandia</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #FF7043;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: #333;
+      position: relative;
+    }
+
+    /* Botón para volver al lobby */
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #FF7043;
+      color: white;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+      transition: all 0.3s ease;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: #BBDEFB;
+      border-radius: 25px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      text-align: center;
+      color: #0D47A1;
+      font-size: 48px;
+      margin-bottom: 10px;
+      font-weight: 900;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #1565C0;
+      font-size: 16px;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    /* Setup Screen */
+    .setup-screen, .game-screen, .result-screen {
+      display: none;
+    }
+
+    .setup-screen.active, .game-screen.active, .result-screen.active {
+      display: block;
+    }
+
+    .form-group {
+      margin: 25px 0;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    input[type="text"], input[type="password"], textarea {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid #FF6B35;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #1E88E5;
+      box-shadow: 0 0 0 4px rgba(217, 70, 239, 0.1);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .btn {
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-block;
+      margin: 10px 5px;
+    }
+
+    .btn-primary {
+      background: #FF7043;
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 140, 105, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 140, 105, 0.4);
+    }
+
+    .btn-secondary {
+      background: #95a5a6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+
+    .btn-center {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    /* Game Screen */
+    .game-container {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .drawing {
+      width: 200px;
+      height: 260px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .drawing::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      width: 4px;
+      height: 220px;
+      background: #333;
+    }
+
+    .drawing::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 20px;
+      width: 120px;
+      height: 4px;
+      background: #333;
+    }
+
+    .drawing .rope {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 138px;
+      width: 2px;
+      height: 40px;
+      background: #666;
+    }
+
+    .head, .body, .arm, .leg {
+      position: absolute;
+      display: none;
+    }
+
+    .head {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #333;
+      border-radius: 50%;
+      top: 44px;
+      left: 118px;
+      background: transparent;
+    }
+
+    .body {
+      width: 4px;
+      height: 70px;
+      background: #333;
+      top: 88px;
+      left: 136px;
+    }
+
+    .arm {
+      width: 50px;
+      height: 4px;
+      background: #333;
+    }
+
+    .arm.left { 
+      top: 105px;
+      left: 86px;
+      transform-origin: right center;
+      transform: rotate(-30deg);
+    }
+
+    .arm.right { 
+      top: 105px;
+      left: 140px;
+      transform-origin: left center;
+      transform: rotate(30deg);
+    }
+
+    .leg {
+      width: 50px;
+      height: 4px;
+      background: #333;
+    }
+
+    .leg.left { 
+      top: 158px;
+      left: 96px;
+      transform-origin: right center;
+      transform: rotate(-40deg);
+    }
+
+    .leg.right { 
+      top: 158px;
+      left: 140px;
+      transform-origin: left center;
+      transform: rotate(40deg);
+    }
+
+    .game-info {
+      flex: 1;
+      min-width: 250px;
+      text-align: center;
+    }
+
+    #word-display {
+      font-size: 48px;
+      letter-spacing: 12px;
+      margin: 25px 0;
+      font-weight: bold;
+      background: #FF7043;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .stat-box {
+      background: #f8f9fa;
+      padding: 15px 25px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #FF6B35;
+    }
+
+    .stat-value.danger {
+      color: #e74c3c;
+    }
+
+    #letter-input {
+      width: 80px;
+      height: 80px;
+      font-size: 48px;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: bold;
+      border: 3px solid #FF6B35;
+      border-radius: 12px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    #guessed-letters {
+      color: #7f8c8d;
+      font-size: 16px;
+      margin: 15px 0;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      min-height: 40px;
+    }
+
+    /* Result Screen */
+    .result-box {
+      background: #FF7043;
+      padding: 30px;
+      border-radius: 20px;
+      margin: 20px 0;
+      text-align: center;
+      animation: bounceIn 0.6s ease;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .result-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+
+    .result-title {
+      font-size: 36px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .result-message {
+      font-size: 20px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .challenge-box {
+      background: #FF7043;
+      border: 3px solid #e74c3c;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px 0;
+    }
+
+    .challenge-title {
+      font-size: 24px;
+      color: #e74c3c;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .challenge-text {
+      font-size: 18px;
+      color: #c0392b;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      #word-display {
+        font-size: 36px;
+        letter-spacing: 8px;
+      }
+
+      #letter-input {
+        width: 60px;
+        height: 60px;
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botón para volver al lobby -->
+  <button class="back-btn" onclick="window.location.href='lobby.html'" title="Volver al Lobby">🚪</button>
+
+  <div class="container">
+    <h1>🔤 Ahorcado</h1>
+    <p class="subtitle">Juego Local - Retolandia</p>
+
+    <!-- SETUP SCREEN -->
+    <div class="setup-screen active">
+      <div class="form-group">
+        <label>🎯 Jugador que pone la palabra:</label>
+        <input type="text" id="setter-name" placeholder="Nombre" value="Jugador 1">
+      </div>
+
+      <div class="form-group">
+        <label>🤔 Jugador que adivina:</label>
+        <input type="text" id="guesser-name" placeholder="Nombre" value="Jugador 2">
+      </div>
+
+      <div class="form-group">
+        <label>🔒 Palabra secreta:</label>
+        <input type="password" id="secret-word" placeholder="Escribe la palabra (mínimo 3 letras)">
+      </div>
+
+      <div class="form-group">
+        <label>😈 Reto para el perdedor:</label>
+        <textarea id="challenge" placeholder="Escribe el reto que deberá cumplir si pierde..."></textarea>
+      </div>
+
+      <div class="btn-center">
+        <button class="btn btn-primary" onclick="startGame()">🚀 Comenzar Juego</button>
+      </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div class="game-screen">
+      <div class="game-container">
+        <div class="drawing">
+          <div class="rope"></div>
+          <div class="head"></div>
+          <div class="body"></div>
+          <div class="arm left"></div>
+          <div class="arm right"></div>
+          <div class="leg left"></div>
+          <div class="leg right"></div>
+        </div>
+
+        <div class="game-info">
+          <div id="word-display">_ _ _ _</div>
+          
+          <div class="stats">
+            <div class="stat-box">
+              <div class="stat-label">Errores</div>
+              <div class="stat-value danger"><span id="mistakes">0</span> / 6</div>
+            </div>
+          </div>
+
+          <p style="font-size: 14px; color: #666; margin: 10px 0;">Letras usadas:</p>
+          <div id="guessed-letters">-</div>
+
+          <input type="text" id="letter-input" maxlength="1" placeholder="?">
+          
+          <div class="btn-center">
+            <button class="btn btn-primary" onclick="guessLetter()">✅ Adivinar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div class="result-screen">
+      <div class="result-box">
+        <div class="result-icon" id="result-icon">🎉</div>
+        <div class="result-title" id="result-title">¡Resultado!</div>
+        <div class="result-message" id="result-message">Mensaje</div>
+      </div>
+
+      <div class="challenge-box" id="challenge-display" style="display: none;">
+        <div class="challenge-title">😈 RETO PARA EL PERDEDOR</div>
+        <div class="challenge-text" id="challenge-text">Reto aquí</div>
+      </div>
+
+      <div class="btn-center">
+        <button class="btn btn-primary" onclick="resetGame()">🔄 Jugar de Nuevo</button>
+        <button class="btn btn-secondary" onclick="backToSetup()">⚙️ Nueva Configuración</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let gameState = {
+      setterName: '',
+      guesserName: '',
+      secretWord: '',
+      challenge: '',
+      displayWord: [],
+      guessedLetters: [],
+      mistakes: 0,
+      maxMistakes: 6
+    };
+
+    const bodyParts = [
+      '.head', '.body', '.arm.left', '.arm.right', '.leg.left', '.leg.right'
+    ];
+
+    function startGame() {
+      const setter = document.getElementById('setter-name').value.trim() || 'Jugador 1';
+      const guesser = document.getElementById('guesser-name').value.trim() || 'Jugador 2';
+      const word = document.getElementById('secret-word').value.trim().toLowerCase();
+      const challenge = document.getElementById('challenge').value.trim();
+
+      if (!word || word.length < 3) {
+        alert('⚠️ La palabra debe tener al menos 3 letras');
+        return;
+      }
+
+      if (!/^[a-záéíóúñ]+$/i.test(word)) {
+        alert('⚠️ La palabra solo debe contener letras');
+        return;
+      }
+
+      if (!challenge) {
+        alert('⚠️ Debes escribir un reto');
+        return;
+      }
+
+      gameState = {
+        setterName: setter,
+        guesserName: guesser,
+        secretWord: word,
+        challenge: challenge,
+        displayWord: Array(word.length).fill('_'),
+        guessedLetters: [],
+        mistakes: 0,
+        maxMistakes: 6
+      };
+
+      document.querySelector('.setup-screen').classList.remove('active');
+      document.querySelector('.game-screen').classList.add('active');
+      
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById('word-display').textContent = gameState.displayWord.join(' ');
+      document.getElementById('mistakes').textContent = gameState.mistakes;
+      document.getElementById('guessed-letters').textContent = 
+        gameState.guessedLetters.length > 0 ? gameState.guessedLetters.join(', ').toUpperCase() : '-';
+
+      // Dibujar partes del cuerpo
+      for (let i = 0; i < gameState.mistakes && i < bodyParts.length; i++) {
+        document.querySelector(bodyParts[i]).style.display = 'block';
+      }
+    }
+
+    function guessLetter() {
+      const input = document.getElementById('letter-input');
+      const letter = input.value.trim().toLowerCase();
+      input.value = '';
+
+      if (!letter || letter.length !== 1) {
+        alert('⚠️ Ingresa solo una letra');
+        return;
+      }
+
+      if (!/^[a-záéíóúñ]$/i.test(letter)) {
+        alert('⚠️ Solo se permiten letras');
+        return;
+      }
+
+      if (gameState.guessedLetters.includes(letter)) {
+        alert('⚠️ Ya usaste esa letra');
+        return;
+      }
+
+      gameState.guessedLetters.push(letter);
+
+      // Verificar si la letra está en la palabra
+      let found = false;
+      for (let i = 0; i < gameState.secretWord.length; i++) {
+        if (gameState.secretWord[i] === letter) {
+          gameState.displayWord[i] = letter;
+          found = true;
+        }
+      }
+
+      if (!found) {
+        gameState.mistakes++;
+      }
+
+      updateDisplay();
+
+      // Verificar victoria o derrota
+      if (gameState.displayWord.join('') === gameState.secretWord) {
+        showResult(true);
+      } else if (gameState.mistakes >= gameState.maxMistakes) {
+        showResult(false);
+      }
+    }
+
+    // Enter para adivinar
+    document.addEventListener('DOMContentLoaded', () => {
+      const letterInput = document.getElementById('letter-input');
+      if (letterInput) {
+        letterInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') guessLetter();
+        });
+      }
+    });
+
+    function showResult(won) {
+      document.querySelector('.game-screen').classList.remove('active');
+      document.querySelector('.result-screen').classList.add('active');
+
+      const icon = document.getElementById('result-icon');
+      const title = document.getElementById('result-title');
+      const message = document.getElementById('result-message');
+      const challengeBox = document.getElementById('challenge-display');
+      const challengeText = document.getElementById('challenge-text');
+
+      if (won) {
+        icon.textContent = '🎉';
+        title.textContent = '¡Ganaste!';
+        message.textContent = `${gameState.guesserName} adivinó la palabra: ${gameState.secretWord.toUpperCase()}`;
+        challengeBox.style.display = 'none';
+      } else {
+        icon.textContent = '💔';
+        title.textContent = 'Perdiste';
+        message.textContent = `La palabra era: ${gameState.secretWord.toUpperCase()}`;
+        challengeBox.style.display = 'block';
+        challengeText.textContent = `${gameState.guesserName}: ${gameState.challenge}`;
+      }
+    }
+
+    function resetGame() {
+      // Intercambiar roles
+      const temp = gameState.setterName;
+      gameState.setterName = gameState.guesserName;
+      gameState.guesserName = temp;
+
+      // Actualizar nombres en el setup
+      document.getElementById('setter-name').value = gameState.setterName;
+      document.getElementById('guesser-name').value = gameState.guesserName;
+      document.getElementById('secret-word').value = '';
+      document.getElementById('challenge').value = '';
+
+      // Reset game state
+      gameState.secretWord = '';
+      gameState.challenge = '';
+      gameState.displayWord = [];
+      gameState.guessedLetters = [];
+      gameState.mistakes = 0;
+
+      // Reset display
+      bodyParts.forEach(part => {
+        const element = document.querySelector(part);
+        if (element) element.style.display = 'none';
+      });
+
+      document.querySelector('.result-screen').classList.remove('active');
+      document.querySelector('.setup-screen').classList.add('active');
+    }
+
+    function backToSetup() {
+      document.getElementById('secret-word').value = '';
+      document.getElementById('challenge').value = '';
+
+      bodyParts.forEach(part => {
+        const element = document.querySelector(part);
+        if (element) element.style.display = 'none';
+      });
+
+      document.querySelector('.result-screen').classList.remove('active');
+      document.querySelector('.setup-screen').classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

@@ -14,19 +14,46 @@
 
     body {
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #FF7043;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
       color: #333;
+      position: relative;
+    }
+
+    /* Botón para volver al lobby */
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #FF7043;
+      color: white;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+      transition: all 0.3s ease;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
     }
 
     .container {
       width: 100%;
       max-width: 600px;
-      background: white;
+      background: #BBDEFB;
       border-radius: 25px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       padding: 40px;
@@ -46,18 +73,19 @@
 
     h1 {
       text-align: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #0D47A1;
       font-size: 48px;
       margin-bottom: 10px;
+      font-weight: 900;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
 
     .subtitle {
       text-align: center;
-      color: #999;
+      color: #1565C0;
       font-size: 16px;
       margin-bottom: 30px;
+      font-weight: 600;
     }
 
     /* SETUP SCREEN */
@@ -70,9 +98,10 @@
     }
 
     .setup-section h3 {
-      color: #667eea;
+      color: #0D47A1;
       margin-bottom: 15px;
       font-size: 20px;
+      font-weight: 700;
     }
 
     input[type="text"] {
@@ -80,7 +109,7 @@
       max-width: 300px;
       padding: 15px;
       font-size: 16px;
-      border: 2px solid #667eea;
+      border: 2px solid #FF6B35;
       border-radius: 12px;
       text-align: center;
       margin: 10px 0;
@@ -89,7 +118,7 @@
 
     input[type="text"]:focus {
       outline: none;
-      border-color: #764ba2;
+      border-color: #1E88E5;
       box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
     }
 
@@ -118,7 +147,7 @@
     }
 
     .toggle-switch.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #FF7043;
     }
 
     .toggle-switch::after {
@@ -126,7 +155,7 @@
       position: absolute;
       width: 26px;
       height: 26px;
-      background: white;
+      background: #BBDEFB;
       border-radius: 50%;
       top: 2px;
       left: 2px;
@@ -155,8 +184,8 @@
 
     .level-btn {
       padding: 12px 24px;
-      border: 2px solid #667eea;
-      background: white;
+      border: 2px solid #FF6B35;
+      background: #BBDEFB;
       border-radius: 12px;
       cursor: pointer;
       font-weight: 600;
@@ -169,9 +198,9 @@
     }
 
     .level-btn.selected {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #FF7043;
       color: white;
-      border-color: #764ba2;
+      border-color: #1E88E5;
     }
 
     .start-btn {
@@ -180,7 +209,7 @@
       font-weight: bold;
       border: none;
       border-radius: 15px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #FF7043;
       color: white;
       cursor: pointer;
       margin-top: 30px;
@@ -220,7 +249,7 @@
     }
 
     .player-info.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #FF7043;
       color: white;
       transform: scale(1.05);
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
@@ -245,8 +274,9 @@
     }
 
     .cell {
+      aspect-ratio: 1;
       background: #f0f0f0;
-      border: 3px solid #667eea;
+      border: 3px solid #FF6B35;
       border-radius: 15px;
       display: flex;
       align-items: center;
@@ -278,16 +308,16 @@
 
     .cell:hover:not(.taken) {
       transform: scale(1.05);
-      border-color: #764ba2;
+      border-color: #1E88E5;
     }
 
     .cell.taken {
       cursor: not-allowed;
-      background: white;
+      background: #BBDEFB;
     }
 
     .cell.winning {
-      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      background: #FF7043;
       color: white;
       animation: winPulse 0.6s ease-in-out;
     }
@@ -301,11 +331,12 @@
       text-align: center;
       font-size: 22px;
       font-weight: bold;
-      color: #667eea;
+      color: #0D47A1;
       margin: 20px 0;
       padding: 15px;
-      background: #f0f9ff;
+      background: #E1F5FE;
       border-radius: 12px;
+      border: 2px solid #0D47A1;
     }
 
     /* RESULT SCREEN */
@@ -345,7 +376,7 @@
     }
 
     .challenge-box {
-      background: linear-gradient(135deg, #ffe0e0 0%, #ffc0c0 100%);
+      background: #FF7043;
       border: 3px solid #e74c3c;
       border-radius: 20px;
       padding: 30px;
@@ -392,7 +423,7 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #FF7043;
       color: white;
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
@@ -452,6 +483,9 @@
   </style>
 </head>
 <body>
+
+  <!-- Botón para volver al lobby -->
+  <button class="back-btn" onclick="window.location.href='lobby.html'" title="Volver al Lobby">🚪</button>
 
   <div class="container">
     <h1>❌⭕ Totito</h1>

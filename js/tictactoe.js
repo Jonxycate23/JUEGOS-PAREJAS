@@ -234,6 +234,10 @@ const WINNING_COMBINATIONS = [
   [0, 4, 8], [2, 4, 6]             // Diagonales
 ];
 
+// Variables del temporizador
+let timerInterval = null;
+let currentTimer = 20;
+
 // ==================== LISTENERS ====================
 
 // Toggle de retos
@@ -331,6 +335,9 @@ onSnapshot(roomRef, (snap) => {
     updateTurnIndicator(data.currentPlayer, room.players, isMyTurn);
     updatePlayerInfo(data.currentPlayer);
     
+    // Activar temporizador para el jugador en turno
+    startTimer(isMyTurn);
+    
     // Habilitar/deshabilitar clicks
     boardCells.forEach((cell, index) => {
       cell.onclick = () => {
@@ -343,6 +350,9 @@ onSnapshot(roomRef, (snap) => {
 
   // FASE: Resultado
   if (data.phase === "result") {
+    // Detener temporizador
+    stopTimer();
+    
     if (gameArea) gameArea.style.display = "block";
     if (resultArea) resultArea.style.display = "block";
     
@@ -580,3 +590,66 @@ async function backToConfig() {
 }
 
 console.log("🎮 Totito - Tres en Caos cargado");
+
+// ==================== TEMPORIZADOR ====================
+
+function startTimer(isMyTurn) {
+  stopTimer();
+  
+  const timerEl = document.getElementById('tictactoe-timer');
+  const timerTextEl = document.getElementById('tictactoe-timer-text');
+  const timerCircle = timerEl?.querySelector('.timer-circle');
+  
+  if (!timerEl || !isMyTurn) {
+    if (timerEl) timerEl.style.display = 'none';
+    return;
+  }
+
+  timerEl.style.display = 'block';
+  currentTimer = 20;
+  timerTextEl.textContent = currentTimer;
+  timerCircle.classList.remove('warning');
+
+  timerInterval = setInterval(async () => {
+    currentTimer--;
+    timerTextEl.textContent = currentTimer;
+
+    // Warning cuando quedan 5 segundos
+    if (currentTimer <= 5) {
+      timerCircle.classList.add('warning');
+    }
+
+    // Tiempo agotado
+    if (currentTimer <= 0) {
+      stopTimer();
+      await handleTimeOut();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  
+  const timerEl = document.getElementById('tictactoe-timer');
+  if (timerEl) {
+    timerEl.style.display = 'none';
+  }
+}
+
+async function handleTimeOut() {
+  const snap = await getDoc(roomRef);
+  const data = snap.data().gameData.tictactoe;
+  
+  // Cambiar de turno automáticamente
+  const nextPlayer = data.currentPlayer === "p1" ? "p2" : "p1";
+  
+  await updateDoc(roomRef, {
+    "gameData.tictactoe.currentPlayer": nextPlayer,
+    "gameData.tictactoe.timer": 20
+  });
+
+  alert("⏰ ¡Se acabó el tiempo! Turno perdido.");
+}

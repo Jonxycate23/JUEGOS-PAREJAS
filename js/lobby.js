@@ -102,22 +102,43 @@ const GAMES = [
   }
 ];
 
-// Avatares disponibles
-const AVATARS = [
-  '👤', '👨', '👩', '🧑', '👦', '👧',
-  '😀', '😃', '😄', '😁', '😆', '😊',
-  '😍', '🥰', '😘', '😎', '🤩', '🥳',
-  '🐱', '🐶', '🐼', '🐨', '🦄', '🦋',
-  '🌟', '⭐', '✨', '💖', '💕', '❤️',
-  '🎮', '🎯', '🎲', '🎭', '🎪', '🎨'
+// Avatares usando DiceBear API
+const AVATAR_STYLES = [
+  'adventurer', 'adventurer-neutral', 'avataaars', 'avataaars-neutral',
+  'big-ears', 'big-ears-neutral', 'big-smile', 'bottts', 'bottts-neutral',
+  'croodles', 'croodles-neutral', 'fun-emoji', 'icons', 'identicon',
+  'initials', 'lorelei', 'lorelei-neutral', 'micah', 'miniavs',
+  'notionists', 'notionists-neutral', 'open-peeps', 'personas',
+  'pixel-art', 'pixel-art-neutral', 'rings', 'shapes', 'thumbs'
 ];
+
+const AVATAR_SEEDS = [
+  'Aiden', 'Mason', 'Sophia', 'Emma', 'Oliver', 'Liam',
+  'Ava', 'Isabella', 'Lucas', 'Mia', 'Noah', 'Charlotte',
+  'Ethan', 'Amelia', 'Logan', 'Harper', 'Alexander', 'Evelyn',
+  'Michael', 'Abigail', 'Daniel', 'Emily', 'Matthew', 'Elizabeth',
+  'Jackson', 'Sofia', 'Sebastian', 'Avery', 'Jack', 'Ella',
+  'Aiden2', 'Lily', 'Owen', 'Chloe', 'Samuel', 'Victoria'
+];
+
+// Función para generar URL de avatar
+function getAvatarURL(index) {
+  const styleIndex = index % AVATAR_STYLES.length;
+  const seedIndex = index % AVATAR_SEEDS.length;
+  const style = AVATAR_STYLES[styleIndex];
+  const seed = AVATAR_SEEDS[seedIndex];
+  
+  return `https://api.dicebear.com/9.x/${style}/svg?seed=${seed}`;
+}
 
 // ==================== ESTADO GLOBAL ====================
 
 let selectedGame = null;
+let gameMode = 'online'; // 'online' o 'local'
 let userProfile = {
   name: 'Usuario',
-  avatar: '👤'
+  avatarIndex: 0,
+  avatarURL: ''
 };
 
 // ==================== INICIALIZACIÓN ====================
@@ -146,7 +167,10 @@ function saveUserProfile() {
 
 function updateProfileDisplay() {
   document.getElementById('current-name').textContent = userProfile.name;
-  document.getElementById('current-avatar').textContent = userProfile.avatar;
+  const avatarEl = document.getElementById('current-avatar');
+  
+  const index = userProfile.avatarIndex !== undefined ? userProfile.avatarIndex : 0;
+  avatarEl.innerHTML = `<img src="${getAvatarURL(index)}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%;">`;
 }
 
 // ==================== RENDERIZADO ====================
@@ -182,12 +206,24 @@ function renderAvatars() {
   const grid = document.getElementById('avatar-grid');
   grid.innerHTML = '';
 
-  AVATARS.forEach(avatar => {
+  // Generar 36 avatares
+  for (let i = 0; i < 36; i++) {
     const option = document.createElement('div');
     option.className = 'avatar-option';
-    option.textContent = avatar;
     
-    if (avatar === userProfile.avatar) {
+    const img = document.createElement('img');
+    img.src = getAvatarURL(i);
+    img.alt = `Avatar ${i + 1}`;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.borderRadius = '50%';
+    
+    option.appendChild(img);
+    option.dataset.avatarIndex = i;
+    
+    // Verificar si este es el avatar actual
+    const currentIndex = userProfile.avatarIndex !== undefined ? userProfile.avatarIndex : 0;
+    if (i === currentIndex) {
       option.classList.add('selected');
     }
 
@@ -196,11 +232,12 @@ function renderAvatars() {
         el.classList.remove('selected');
       });
       option.classList.add('selected');
-      userProfile.avatar = avatar;
+      userProfile.avatarIndex = i;
+      userProfile.avatarURL = getAvatarURL(i);
     });
 
     grid.appendChild(option);
-  });
+  }
 }
 
 // ==================== SELECCIÓN DE JUEGO ====================
@@ -225,6 +262,60 @@ function selectGame(game, cardElement) {
 
 // ==================== GESTIÓN DE SALAS ====================
 
+function updateRoomSection() {
+  const roomSection = document.querySelector('.room-section');
+  
+  if (gameMode === 'local') {
+    roomSection.innerHTML = `
+      <h2 class="section-title">🎮 Jugar en Modo Local</h2>
+      <div class="room-actions">
+        <div class="room-card" style="max-width: 500px; margin: 0 auto;">
+          <h3>📱 Un Solo Dispositivo</h3>
+          <p style="color: #666; margin-bottom: 15px;">
+            Juega con tu pareja en el mismo dispositivo, turnándose para jugar
+          </p>
+          <button id="start-local-btn">🚀 Iniciar Juego Local</button>
+        </div>
+      </div>
+    `;
+    
+    // Agregar listener al botón de inicio local
+    document.getElementById('start-local-btn').addEventListener('click', () => {
+      if (!selectedGame) {
+        alert('⚠️ Primero selecciona un juego');
+        return;
+      }
+      window.location.href = `${selectedGame}.html`;
+    });
+  } else {
+    roomSection.innerHTML = `
+      <h2 class="section-title">🚪 Gestiona tu Sala</h2>
+      <div class="room-actions">
+        <div class="room-card">
+          <h3>🆕 Crear Sala Nueva</h3>
+          <p style="color: #666; margin-bottom: 15px;">Crea una sala y comparte el código con tu pareja</p>
+          <button id="create-room-btn">Crear Sala</button>
+        </div>
+        
+        <div class="room-card">
+          <h3>🔑 Unirse a Sala</h3>
+          <p style="color: #666; margin-bottom: 15px;">Ingresa el código de la sala</p>
+          <input type="text" id="room-code-input" placeholder="CÓDIGO" maxlength="5">
+          <button id="join-room-btn">Unirse</button>
+          <p id="room-message" style="color: #e74c3c; margin-top: 10px; min-height: 20px;"></p>
+        </div>
+      </div>
+    `;
+    
+    // Re-agregar listeners
+    document.getElementById('create-room-btn').addEventListener('click', createRoom);
+    document.getElementById('join-room-btn').addEventListener('click', joinRoom);
+    document.getElementById('room-code-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') joinRoom();
+    });
+  }
+}
+
 function generateRoomId() {
   return Math.random().toString(36).substring(2, 7).toUpperCase();
 }
@@ -237,6 +328,12 @@ async function createRoom() {
 
   if (!selectedGame) {
     alert('⚠️ Primero selecciona un juego');
+    return;
+  }
+
+  // Si es modo local, redirigir a la versión standalone
+  if (gameMode === 'local') {
+    window.location.href = `${selectedGame}.html`;
     return;
   }
 
@@ -369,7 +466,9 @@ function getInitialGameData(gameId) {
       challengeLevel: 'medium',
       customChallenges: [],
       challengeType: 'system',
-      configured: false
+      configured: false,
+      timer: 20,
+      timerActive: false
     },
     // Agregar más juegos aquí cuando estén listos
   };
@@ -380,6 +479,20 @@ function getInitialGameData(gameId) {
 // ==================== EVENT LISTENERS ====================
 
 function attachEventListeners() {
+  // Selector de modo
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remover selección previa
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+      // Seleccionar nuevo modo
+      btn.classList.add('selected');
+      gameMode = btn.dataset.mode;
+      
+      // Actualizar UI de la sección de sala
+      updateRoomSection();
+    });
+  });
+
   // Avatar clickeable
   document.getElementById('current-avatar').addEventListener('click', () => {
     openProfileModal();

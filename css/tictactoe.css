@@ -33,7 +33,7 @@
 }
 
 .tictactoe-player.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #C724B1 100%);
   color: white;
   transform: scale(1.05);
   box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
@@ -60,13 +60,73 @@
   text-align: center;
   font-size: 24px;
   font-weight: bold;
-  color: #667eea;
+  color: #FF6B35;
   margin: 25px 0;
   padding: 20px;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
   border-radius: 15px;
-  border: 2px solid #667eea;
+  border: 2px solid #FF6B35;
   animation: pulse 2s infinite;
+}
+
+/* TEMPORIZADOR */
+.tictactoe-timer {
+  text-align: center;
+  margin: 20px 0;
+  animation: fadeIn 0.3s ease;
+}
+
+.timer-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+  position: relative;
+  animation: timerPulse 1s infinite;
+}
+
+.timer-circle.warning {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  animation: timerShake 0.5s infinite;
+}
+
+.timer-text {
+  font-size: 48px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.timer-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+@keyframes timerPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes timerShake {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+  }
+  25% {
+    transform: translateX(-5px) scale(1.1);
+  }
+  75% {
+    transform: translateX(5px) scale(1.1);
+  }
 }
 
 @keyframes pulse {
@@ -91,7 +151,7 @@
 .tictactoe-cell {
   aspect-ratio: 1;
   background: #ffffff;
-  border: 4px solid #667eea;
+  border: 4px solid #FF6B35;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -124,7 +184,7 @@
 
 .tictactoe-cell:hover:not(.taken) {
   transform: scale(1.05);
-  border-color: #764ba2;
+  border-color: #C724B1;
   box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
@@ -135,7 +195,7 @@
 
 .tictactoe-cell.taken:hover {
   transform: none;
-  border-color: #667eea;
+  border-color: #FF6B35;
 }
 
 .tictactoe-cell.winning {
@@ -319,7 +379,7 @@
 }
 
 .tictactoe-btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #C724B1 100%);
   color: white;
 }
 
@@ -343,7 +403,7 @@
 .tictactoe-config-title {
   font-size: 20px;
   font-weight: bold;
-  color: #667eea;
+  color: #FF6B35;
   margin-bottom: 20px;
   text-align: center;
 }
@@ -373,7 +433,7 @@
 }
 
 .toggle-switch.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #C724B1 100%);
 }
 
 .toggle-switch::after {
@@ -402,7 +462,7 @@
 
 .level-option {
   padding: 12px 24px;
-  border: 2px solid #667eea;
+  border: 2px solid #FF6B35;
   background: white;
   border-radius: 12px;
   cursor: pointer;
@@ -416,9 +476,9 @@
 }
 
 .level-option.selected {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #C724B1 100%);
   color: white;
-  border-color: #764ba2;
+  border-color: #C724B1;
 }
 
 /* RESPONSIVE */

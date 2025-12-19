@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>💕 Juegos para Parejas - Lobby</title>
+  <title>🎮 Retolandia - Juegos y Retos para Parejas</title>
   <style>
     * {
       margin: 0;
@@ -13,7 +13,7 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #FF7043;
       min-height: 100vh;
       padding: 20px;
     }
@@ -38,7 +38,7 @@
 
     /* Perfil de usuario */
     .user-profile {
-      background: white;
+      background: #BBDEFB;
       padding: 20px;
       border-radius: 15px;
       max-width: 1200px;
@@ -61,7 +61,7 @@
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FF6B35 0%, #FFB347 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -82,7 +82,7 @@
 
     .change-profile-btn {
       padding: 10px 20px;
-      background: #667eea;
+      background: linear-gradient(135deg, #1E88E5 0%, #EC4899 100%);
       color: white;
       border: none;
       border-radius: 8px;
@@ -92,7 +92,7 @@
     }
 
     .change-profile-btn:hover {
-      background: #764ba2;
+      background: linear-gradient(135deg, #EC4899 0%, #1E88E5 100%);
       transform: translateY(-2px);
     }
 
@@ -104,7 +104,7 @@
 
     /* Cuadrícula de juegos */
     .games-section {
-      background: white;
+      background: #BBDEFB;
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
@@ -112,9 +112,62 @@
 
     .section-title {
       text-align: center;
-      color: #667eea;
+      color: #0D47A1;
       font-size: 32px;
       margin-bottom: 30px;
+      font-weight: 800;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* Selector de Modo */
+    .mode-selector {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      flex: 1;
+      min-width: 250px;
+      max-width: 350px;
+      padding: 30px 20px;
+      background: #BBDEFB;
+      border: 3px solid #e0e0e0;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .mode-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+      border-color: #FF6B35;
+    }
+
+    .mode-btn.selected {
+      border-color: #FF6B35;
+      background: linear-gradient(135deg, #FFF5F0 0%, #FFE8E0 100%);
+      box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+    }
+
+    .mode-icon {
+      font-size: 64px;
+      margin-bottom: 15px;
+    }
+
+    .mode-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .mode-desc {
+      font-size: 14px;
+      color: #666;
     }
 
     .games-grid {
@@ -144,11 +197,11 @@
 
     .game-card.available {
       background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-      border: 2px solid #667eea;
+      border: 2px solid #FF6B35;
     }
 
     .game-card.available:hover {
-      border-color: #764ba2;
+      border-color: #1E88E5;
       background: linear-gradient(135deg, #f0f4ff 0%, #e8ecff 100%);
     }
 
@@ -174,15 +227,17 @@
     .game-name {
       font-size: 22px;
       font-weight: bold;
-      color: #333;
+      color: #0D47A1;
       margin-bottom: 8px;
+      text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
     }
 
     .game-description {
       font-size: 14px;
-      color: #666;
+      color: #1565C0;
       margin-bottom: 10px;
       min-height: 40px;
+      font-weight: 500;
     }
 
     .game-timer {
@@ -233,13 +288,35 @@
     }
 
     .modal-content {
-      background: white;
-      padding: 40px;
+      background: #BBDEFB;
+      padding: 30px 20px 20px 20px;
       border-radius: 20px;
       max-width: 500px;
       width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       animation: slideIn 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+      margin-bottom: 20px;
+    }
+
+    .modal-buttons {
+      position: sticky;
+      bottom: 0;
+      background: #BBDEFB;
+      padding: 15px 0 5px 0;
+      border-top: 2px solid #f0f0f0;
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
     }
 
     @keyframes slideIn {
@@ -255,7 +332,7 @@
 
     .modal-title {
       text-align: center;
-      color: #667eea;
+      color: #FF6B35;
       font-size: 28px;
       margin-bottom: 25px;
     }
@@ -282,7 +359,7 @@
 
     .form-group input:focus {
       outline: none;
-      border-color: #667eea;
+      border-color: #FF6B35;
     }
 
     .avatar-grid {
@@ -312,7 +389,7 @@
     }
 
     .avatar-option.selected {
-      border-color: #667eea;
+      border-color: #FF6B35;
       background: #f0f4ff;
       transform: scale(1.15);
     }
@@ -335,13 +412,13 @@
     }
 
     .btn-save {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FF6B35 0%, #1E88E5 100%);
       color: white;
     }
 
     .btn-save:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 4px 12px rgba(255, 140, 105, 0.4);
     }
 
     .btn-cancel {
@@ -355,7 +432,7 @@
 
     /* Sección de sala */
     .room-section {
-      background: white;
+      background: #BBDEFB;
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
@@ -379,14 +456,14 @@
     }
 
     .room-card h3 {
-      color: #667eea;
+      color: #FF6B35;
       margin-bottom: 15px;
     }
 
     .room-card input {
       width: 100%;
       padding: 12px;
-      border: 2px solid #667eea;
+      border: 2px solid #FF6B35;
       border-radius: 8px;
       font-size: 16px;
       margin-bottom: 15px;
@@ -397,7 +474,7 @@
     .room-card button {
       width: 100%;
       padding: 15px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FF6B35 0%, #1E88E5 100%);
       color: white;
       border: none;
       border-radius: 8px;
@@ -419,7 +496,7 @@
       }
 
       .games-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 15px;
       }
 
@@ -436,12 +513,66 @@
       }
 
       .avatar-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+      }
+
+      .avatar-option {
+        width: 45px;
+        height: 45px;
+        font-size: 24px;
       }
 
       .user-profile {
         flex-direction: column;
         text-align: center;
+      }
+
+      .modal-content {
+        padding: 30px 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal-buttons {
+        position: sticky;
+        bottom: 0;
+        background: #BBDEFB;
+        padding-top: 15px;
+        margin-top: 20px;
+        border-top: 2px solid #f0f0f0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .game-card {
+        padding: 15px;
+      }
+
+      .avatar-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+      }
+
+      .avatar-option {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+
+      .modal-content {
+        padding: 25px 15px;
+        width: 95%;
+      }
+
+      .modal-buttons button {
+        padding: 10px;
+        font-size: 14px;
       }
     }
   </style>
@@ -450,8 +581,8 @@
 
   <!-- Header -->
   <div class="header">
-    <h1>💕 Juegos para Parejas</h1>
-    <p>Diversión, retos y conexión en cada juego</p>
+    <h1>🎮 Retolandia</h1>
+    <p>El paraíso de los retos, diversión y conexión para parejas</p>
   </div>
 
   <!-- Perfil de usuario -->
@@ -471,7 +602,23 @@
     
     <!-- Sección de juegos -->
     <div class="games-section">
-      <h2 class="section-title">🎮 Elige tu Juego</h2>
+      <h2 class="section-title">🎮 Modo de Juego</h2>
+      
+      <!-- Selector de Modo -->
+      <div class="mode-selector">
+        <button class="mode-btn selected" data-mode="online">
+          <div class="mode-icon">🌐</div>
+          <div class="mode-name">En Pareja</div>
+          <div class="mode-desc">2 dispositivos diferentes</div>
+        </button>
+        <button class="mode-btn" data-mode="local">
+          <div class="mode-icon">📱</div>
+          <div class="mode-name">Modo Local</div>
+          <div class="mode-desc">1 dispositivo compartido</div>
+        </button>
+      </div>
+
+      <h2 class="section-title" style="margin-top: 40px;">🎯 Elige tu Juego</h2>
       
       <div class="games-grid" id="games-grid">
         <!-- Los juegos se cargarán aquí dinámicamente -->
@@ -505,15 +652,17 @@
     <div class="modal-content">
       <h2 class="modal-title">✏️ Edita tu Perfil</h2>
       
-      <div class="form-group">
-        <label>Tu Nombre:</label>
-        <input type="text" id="name-input" placeholder="Escribe tu nombre" maxlength="20">
-      </div>
+      <div class="modal-scroll-content">
+        <div class="form-group">
+          <label>Tu Nombre:</label>
+          <input type="text" id="name-input" placeholder="Escribe tu nombre" maxlength="20">
+        </div>
 
-      <div class="form-group">
-        <label>Elige tu Avatar:</label>
-        <div class="avatar-grid" id="avatar-grid">
-          <!-- Avatares se cargarán aquí -->
+        <div class="form-group">
+          <label>Elige tu Avatar:</label>
+          <div class="avatar-grid" id="avatar-grid">
+            <!-- Avatares se cargarán aquí -->
+          </div>
         </div>
       </div>
 

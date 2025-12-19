@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Sala de Juego 💕</title>
+  <title>🎮 Retolandia - Sala de Juego</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/hangman.css">
   <link rel="stylesheet" href="css/loading-cube.css">
@@ -17,7 +17,7 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
       min-height: 100vh;
       padding: 20px;
       position: relative;
@@ -58,7 +58,7 @@
     .room-title {
       font-size: 28px;
       font-weight: bold;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -77,7 +77,7 @@
     }
 
     #room-code {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
       color: white;
       padding: 8px 20px;
       border-radius: 12px;
@@ -102,7 +102,7 @@
       background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
       position: fixed;
       top: 20px;
-      right: 20px;
+      right: 160px;
       width: 56px;
       height: 56px;
       border-radius: 50%;
@@ -129,6 +129,38 @@
       transform: scale(1.05);
     }
 
+    /* Botón de salir */
+    .exit-btn {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      position: fixed;
+      top: 20px;
+      right: 90px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+      transition: all 0.3s ease;
+      z-index: 9998;
+      padding: 0;
+      margin: 0;
+    }
+
+    .exit-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
+    }
+
+    .exit-btn:active {
+      transform: scale(1.05);
+    }
+
     /* Contenedor de contenido */
     .content-container {
       max-width: 900px;
@@ -144,7 +176,7 @@
       cursor: pointer;
       border: none;
       border-radius: 12px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
       color: white;
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
@@ -166,7 +198,7 @@
     }
 
     button[data-game] {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
       font-size: 18px;
       padding: 16px 32px;
       margin: 12px;
@@ -182,7 +214,7 @@
       font-size: 16px;
       padding: 12px 16px;
       text-align: center;
-      border: 2px solid #667eea;
+      border: 2px solid #FF8C69;
       border-radius: 12px;
       margin: 8px;
       transition: all 0.3s;
@@ -191,7 +223,7 @@
     }
 
     input:focus:not(#chat-input), textarea:focus {
-      border-color: #764ba2;
+      border-color: #D946EF;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
       transform: scale(1.02);
     }
@@ -202,7 +234,7 @@
       text-transform: uppercase;
       font-weight: bold;
       text-align: center;
-      border: 3px solid #667eea;
+      border: 3px solid #FF8C69;
       border-radius: 12px;
       padding: 12px;
     }
@@ -213,7 +245,7 @@
       letter-spacing: 12px;
       margin: 25px 0;
       font-weight: bold;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -242,7 +274,7 @@
     }
 
     .game-section h2 {
-      color: #667eea;
+      color: #FF8C69;
       font-size: 32px;
       margin-bottom: 20px;
       text-align: center;
@@ -276,7 +308,7 @@
     .stat-value {
       font-size: 28px;
       font-weight: bold;
-      color: #667eea;
+      color: #FF8C69;
     }
 
     .stat-value.danger {
@@ -330,7 +362,7 @@
       padding: 12px;
       background: #f0f4ff;
       border-radius: 10px;
-      border-left: 4px solid #667eea;
+      border-left: 4px solid #FF8C69;
     }
 
     /* Modal mejorado */
@@ -375,7 +407,7 @@
     }
 
     .modal-content h2 {
-      color: #667eea;
+      color: #FF8C69;
       margin-bottom: 15px;
       font-size: 28px;
     }
@@ -413,7 +445,7 @@
       font-size: 15px;
       padding: 15px;
       border-radius: 12px;
-      border: 2px solid #667eea;
+      border: 2px solid #FF8C69;
       resize: vertical;
       font-family: inherit;
       line-height: 1.5;
@@ -464,7 +496,15 @@
         height: 48px;
         font-size: 24px;
         top: 15px;
-        right: 15px;
+        right: 140px;
+      }
+
+      .exit-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+        top: 15px;
+        right: 80px;
       }
 
       .game-stats {
@@ -474,6 +514,31 @@
       .stat-box {
         min-width: 100px;
         padding: 12px 20px;
+      }
+
+      .modal-content {
+        padding: 30px 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .avatar-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+      }
+
+      .avatar-option {
+        width: 45px;
+        height: 45px;
+        font-size: 24px;
+      }
+
+      .modal-buttons {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding-top: 15px;
+        margin-top: 20px;
       }
     }
 
@@ -504,7 +569,7 @@
         letter-spacing: 6px;
       }
 
-      button:not(.change-game-btn):not(.chat-fab):not(.chat-btn-small):not(.emoji-btn):not(#chat-send) {
+      button:not(.change-game-btn):not(.exit-btn):not(.chat-fab):not(.chat-btn-small):not(.emoji-btn):not(#chat-send) {
         padding: 12px 20px;
         font-size: 14px;
       }
@@ -514,11 +579,36 @@
         height: 44px;
         font-size: 20px;
         top: 12px;
-        right: 12px;
+        right: 120px;
+      }
+
+      .exit-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+        top: 12px;
+        right: 65px;
       }
 
       .modal-content {
-        padding: 25px 20px;
+        padding: 25px 15px;
+        width: 95%;
+      }
+
+      .avatar-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+      }
+
+      .avatar-option {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+
+      .modal-buttons button {
+        padding: 10px;
+        font-size: 14px;
       }
     }
 
@@ -534,7 +624,7 @@
   <!-- Header de la sala -->
   <div class="room-header">
     <div class="room-info-left">
-      <div class="room-title">💖 Juegos para Parejas</div>
+      <div class="room-title">🎮 Retolandia</div>
       <div class="room-code-container">
         <span class="room-code-label">🔑 Código de sala:</span>
         <div id="room-code">-----</div>
@@ -545,6 +635,9 @@
 
   <!-- Botón para cambiar de juego -->
   <button class="change-game-btn" id="open-game-selector" title="Cambiar Juego">🎮</button>
+
+  <!-- Botón para salir al lobby -->
+  <button class="exit-btn" id="exit-to-lobby" title="Salir al Lobby">🚪</button>
 
   <!-- Contenedor principal -->
   <div class="content-container">
@@ -558,6 +651,13 @@
         <button data-game="tictactoe">❌⭕ Totito</button>
         <button disabled>🧠 Memoria (pronto)</button>
         <button disabled>💬 Verdad o Reto (pronto)</button>
+        <button disabled>🧱 Jenga Virtual (pronto)</button>
+        <button disabled>🧪 Quiz (pronto)</button>
+        <button disabled>🚫 Yo Nunca (pronto)</button>
+        <button disabled>🤔 Qué Prefieres (pronto)</button>
+        <button disabled>🎡 Ruleta de Retos (pronto)</button>
+        <button disabled>🍾 Botella Giratoria (pronto)</button>
+        <button disabled>🎲 Dado Virtual (pronto)</button>
         <br><br>
         <button id="close-modal" style="background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);">✕ Cancelar</button>
       </div>
@@ -626,7 +726,7 @@
 
         <!-- FASE: INGRESAR PALABRA Y RETO -->
         <div id="set-word-area" style="display:none">
-          <p style="font-size: 18px; color: #667eea; margin-bottom: 20px;">
+          <p style="font-size: 18px; color: #FF8C69; margin-bottom: 20px;">
             ✍️ Escribe la palabra secreta y el reto para tu pareja
           </p>
           
@@ -730,7 +830,7 @@
                 <textarea 
                   id="tictactoe-custom-input" 
                   placeholder="Ejemplo:&#10;Canta una canción&#10;Baila por 30 segundos&#10;Haz 10 flexiones"
-                  style="width: 100%; min-height: 150px; padding: 15px; border: 2px solid #667eea; border-radius: 12px; font-size: 14px; font-family: Arial; resize: vertical;"
+                  style="width: 100%; min-height: 150px; padding: 15px; border: 2px solid #FF8C69; border-radius: 12px; font-size: 14px; font-family: Arial; resize: vertical;"
                 ></textarea>
                 <p style="font-size: 12px; color: #999; margin-top: 10px;">
                   💡 Tip: Escribe varios retos para que se elijan al azar
@@ -764,6 +864,14 @@
 
           <div class="tictactoe-turn-indicator" id="tictactoe-turn-indicator">
             🎯 Turno de Jugador 1 (❌)
+          </div>
+
+          <!-- TEMPORIZADOR -->
+          <div class="tictactoe-timer" id="tictactoe-timer" style="display: none;">
+            <div class="timer-circle">
+              <div class="timer-text" id="tictactoe-timer-text">20</div>
+            </div>
+            <div class="timer-label">segundos restantes</div>
           </div>
 
           <div class="tictactoe-board">
@@ -829,6 +937,7 @@
     const modal = document.getElementById("game-selector-modal");
     const openBtn = document.getElementById("open-game-selector");
     const closeBtn = document.getElementById("close-modal");
+    const exitBtn = document.getElementById("exit-to-lobby");
 
     openBtn.addEventListener("click", () => {
       modal.classList.add("active");
@@ -836,6 +945,12 @@
 
     closeBtn.addEventListener("click", () => {
       modal.classList.remove("active");
+    });
+
+    exitBtn.addEventListener("click", () => {
+      if (confirm("¿Seguro que quieres salir al lobby? Se perderá el progreso del juego actual.")) {
+        window.location.href = "lobby.html";
+      }
     });
 
     modal.addEventListener("click", (e) => {

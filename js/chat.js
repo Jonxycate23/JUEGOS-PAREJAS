@@ -36,6 +36,7 @@ const EMOJI_CATEGORIES = {
 
 let chatOpen = false;
 let partnerInfo = { name: 'Pareja', avatar: '💕' };
+let lastMessageCount = 0; // Contador de mensajes leídos
 
 // Crear HTML del chat
 export function initChat() {
@@ -123,7 +124,7 @@ function updateChatHeader() {
     headerInfo.innerHTML = `
       <div class="chat-header-avatar">${partnerInfo.avatar}</div>
       <div class="chat-header-text">
-        <div class="chat-header-name">${partnerInfo.name}</div>
+        <div class="chat-header-name">Chat con ${partnerInfo.name}</div>
         <div class="chat-header-status">En línea</div>
       </div>
     `;
@@ -165,7 +166,7 @@ function attachChatStyles() {
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FF8C69 0%, #D946EF 100%);
       border: none;
       color: white;
       font-size: 28px;
@@ -214,7 +215,7 @@ function attachChatStyles() {
     }
 
     .chat-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FF8C69 0%, #D946EF 100%);
       color: white;
       padding: 12px 15px;
       display: flex;
@@ -345,7 +346,7 @@ function attachChatStyles() {
     .message-username {
       font-size: 11px;
       font-weight: bold;
-      color: #667eea;
+      color: #FF8C69;
     }
 
     @keyframes slideIn {
@@ -377,7 +378,7 @@ function attachChatStyles() {
     }
 
     .chat-message.me .chat-message-bubble {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FF8C69 0%, #D946EF 100%);
       color: white;
       border-bottom-right-radius: 4px;
     }
@@ -413,7 +414,7 @@ function attachChatStyles() {
     }
 
     #chat-send {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #FF8C69 0%, #D946EF 100%);
       border: none;
       color: white;
       width: 36px;
@@ -486,6 +487,14 @@ function attachChatListeners() {
     window.classList.toggle('active');
     if (chatOpen) {
       input.focus();
+      // Marcar todos los mensajes actuales como leídos
+      const roomRef = doc(db, "rooms", roomId);
+      onSnapshot(roomRef, (snap) => {
+        if (snap.exists()) {
+          const room = snap.data();
+          lastMessageCount = (room.chat || []).length;
+        }
+      }, { once: true });
       clearUnreadBadge();
     }
   });
@@ -580,18 +589,24 @@ function renderMessages(messages) {
   
   container.scrollTop = container.scrollHeight;
   
-  // Badge de no leídos
-  if (!chatOpen && messages.length > 0) {
-    showUnreadBadge();
+  // Badge de no leídos - SOLO si hay mensajes nuevos Y el chat está cerrado
+  if (!chatOpen && messages.length > lastMessageCount) {
+    const newMessages = messages.length - lastMessageCount;
+    showUnreadBadge(newMessages);
+  }
+  
+  // Si el chat está abierto, actualizar contador de leídos
+  if (chatOpen) {
+    lastMessageCount = messages.length;
+    clearUnreadBadge();
   }
 }
 
 // Badge de mensajes no leídos
-function showUnreadBadge() {
+function showUnreadBadge(count) {
   const badge = document.getElementById('unread-badge');
   badge.style.display = 'flex';
-  const current = parseInt(badge.textContent) || 0;
-  badge.textContent = current + 1;
+  badge.textContent = count;
 }
 
 function clearUnreadBadge() {
