@@ -25,8 +25,8 @@ const GAMES = [
     name: 'Memoria',
     icon: '🧠',
     description: 'Recuerdos Cruzados - Encuentra las parejas',
-    timer: '⏱️ 10-15 seg',
-    available: false
+    timer: '⏱️ 15 seg',
+    available: true
   },
   {
     id: 'tictactoe',
@@ -463,22 +463,24 @@ function getInitialGameData(gameId) {
       timeLeft: 15
     },
     tictactoe: {
-      phase: 'playing',
+      phase: 'config',
       currentPlayer: 'p1',
       board: Array(9).fill(null),
       winner: null,
+      winningCells: [],
       withChallenges: false,
       challengeLevel: 'medium',
       customChallenges: [],
       challengeType: 'system',
-      configured: false,
-      timer: 20,
-      timerActive: false
+      configured: false
     },
     // Agregar más juegos aquí cuando estén listos
   };
 
-  return initialData[gameId] || {};
+  // Retornar con estructura correcta
+  return {
+    [gameId]: initialData[gameId] || {}
+  };
 }
 
 // ==================== EVENT LISTENERS ====================

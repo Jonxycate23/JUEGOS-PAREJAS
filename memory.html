@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎮 Totito - Tres en Caos</title>
+  <title>🧠 Memoria - Recuerdos Cruzados</title>
   
   <style>
     * {
@@ -52,7 +52,7 @@
 
     .container {
       width: 100%;
-      max-width: 600px;
+      max-width: 700px;
       background: #BBDEFB;
       border-radius: 25px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -245,6 +245,7 @@
       text-align: center;
       padding: 15px;
       border-radius: 15px;
+      background: #f0f0f0;
       transition: all 0.3s;
     }
 
@@ -261,70 +262,9 @@
       margin-bottom: 5px;
     }
 
-    .player-symbol {
+    .player-score {
       font-size: 36px;
-    }
-
-    .board {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin: 30px 0;
-      aspect-ratio: 1;
-    }
-
-    .cell {
-      aspect-ratio: 1;
-      background: #f0f0f0;
-      border: 3px solid #FF6B35;
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 60px;
-      cursor: pointer;
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cell::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(102, 126, 234, 0.2);
-      transform: translate(-50%, -50%);
-      transition: width 0.3s, height 0.3s;
-    }
-
-    .cell:hover:not(.taken)::before {
-      width: 100%;
-      height: 100%;
-    }
-
-    .cell:hover:not(.taken) {
-      transform: scale(1.05);
-      border-color: #1E88E5;
-    }
-
-    .cell.taken {
-      cursor: not-allowed;
-      background: #BBDEFB;
-    }
-
-    .cell.winning {
-      background: #FF7043;
-      color: white;
-      animation: winPulse 0.6s ease-in-out;
-    }
-
-    @keyframes winPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      font-weight: bold;
     }
 
     .turn-indicator {
@@ -337,6 +277,100 @@
       background: #E1F5FE;
       border-radius: 12px;
       border: 2px solid #0D47A1;
+    }
+
+    /* Timer */
+    .timer-display {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #FF6B35;
+      margin: 15px 0;
+      padding: 12px;
+      background: #fff3cd;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .timer-display.active {
+      display: block;
+      animation: pulse 1s infinite;
+    }
+
+    .timer-display.warning {
+      background: #ffe0e0;
+      color: #e74c3c;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Memory Grid */
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .memory-card {
+      aspect-ratio: 1;
+      perspective: 1000px;
+      cursor: pointer;
+      border-radius: 15px;
+    }
+
+    .memory-card.disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .memory-card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #FF6B35 0%, #1E88E5 100%);
+      color: white;
+      font-size: 36px;
+    }
+
+    .card-back {
+      background: white;
+      transform: rotateY(180deg);
+    }
+
+    .memory-card.matched .card-back {
+      background: #d4edda;
+      animation: matchPulse 0.6s ease;
+    }
+
+    @keyframes matchPulse {
+      0%, 100% { transform: rotateY(180deg) scale(1); }
+      50% { transform: rotateY(180deg) scale(1.1); }
     }
 
     /* RESULT SCREEN */
@@ -373,6 +407,20 @@
       font-size: 24px;
       color: #555;
       margin: 15px 0;
+    }
+
+    .final-scores {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin: 25px 0;
+    }
+
+    .final-score-box {
+      background: #f0f4ff;
+      padding: 20px;
+      border-radius: 15px;
+      min-width: 150px;
     }
 
     .challenge-box {
@@ -453,31 +501,26 @@
         font-size: 36px;
       }
 
-      .cell {
-        font-size: 48px;
+      .memory-grid {
+        gap: 10px;
       }
 
-      .player-symbol {
-        font-size: 28px;
-      }
-
-      .result-title {
+      .card-front, .card-back {
         font-size: 36px;
       }
 
-      .challenge-text {
-        font-size: 18px;
+      .final-scores {
+        flex-direction: column;
       }
     }
 
     @media (max-width: 400px) {
-      .cell {
-        font-size: 36px;
-        border-width: 2px;
+      .memory-grid {
+        grid-template-columns: repeat(3, 1fr);
       }
 
-      .board {
-        gap: 10px;
+      .card-front, .card-back {
+        font-size: 28px;
       }
     }
   </style>
@@ -488,18 +531,18 @@
   <button class="float-menu-btn" onclick="window.location.href='lobby.html'" title="Volver al Lobby">🚪</button>
 
   <div class="container">
-    <h1>❌⭕ Totito</h1>
-    <p class="subtitle">Tres en Caos - Juego Local para Parejas</p>
+    <h1>🧠 Memoria</h1>
+    <p class="subtitle">Recuerdos Cruzados - Juego Local</p>
 
     <!-- SETUP SCREEN -->
     <div class="setup-screen" id="setup-screen">
       <div class="setup-section">
-        <h3>👤 Jugador 1 (❌)</h3>
+        <h3>👤 Jugador 1</h3>
         <input type="text" id="player1-name" placeholder="Nombre del Jugador 1" value="Jugador 1">
       </div>
 
       <div class="setup-section">
-        <h3>👤 Jugador 2 (⭕)</h3>
+        <h3>👤 Jugador 2</h3>
         <input type="text" id="player2-name" placeholder="Nombre del Jugador 2" value="Jugador 2">
       </div>
 
@@ -529,36 +572,36 @@
       <div class="game-header">
         <div class="player-info active" id="player1-info">
           <div class="player-name" id="p1-name-display">Jugador 1</div>
-          <div class="player-symbol">❌</div>
+          <div class="player-score" id="p1-score">0</div>
         </div>
 
         <div class="player-info" id="player2-info">
           <div class="player-name" id="p2-name-display">Jugador 2</div>
-          <div class="player-symbol">⭕</div>
+          <div class="player-score" id="p2-score">0</div>
         </div>
       </div>
 
       <div class="turn-indicator" id="turn-indicator">
-        🎯 Turno de Jugador 1 (❌)
+        🎯 Turno de Jugador 1
       </div>
 
-      <div class="board" id="board">
-        <div class="cell" data-index="0"></div>
-        <div class="cell" data-index="1"></div>
-        <div class="cell" data-index="2"></div>
-        <div class="cell" data-index="3"></div>
-        <div class="cell" data-index="4"></div>
-        <div class="cell" data-index="5"></div>
-        <div class="cell" data-index="6"></div>
-        <div class="cell" data-index="7"></div>
-        <div class="cell" data-index="8"></div>
+      <div class="timer-display" id="timer-display">
+        ⏱️ <span id="timer-value">15</span>s
+      </div>
+
+      <div class="memory-grid" id="memory-grid">
+        <!-- Cards se generan dinámicamente -->
       </div>
     </div>
 
     <!-- RESULT SCREEN -->
     <div class="result-screen" id="result-screen">
       <div class="result-title" id="result-title">🎉</div>
-      <div class="result-message" id="result-message">¡Ganador!</div>
+      <div class="result-message" id="result-message">¡Resultado!</div>
+
+      <div class="final-scores" id="final-scores">
+        <!-- Puntuaciones finales -->
+      </div>
 
       <div class="challenge-box" id="challenge-box" style="display: none;">
         <div class="challenge-title">😈 RETO PARA EL PERDEDOR</div>
@@ -572,245 +615,60 @@
     </div>
   </div>
 
+  <script src="js/challenges-data.js"></script>
   <script>
-    // ==================== CONFIGURACIÓN ====================
-    
-    const CHALLENGES = {
-      soft: [
-        // Retos románticos
-        "Canta una canción romántica",
-        "Di 3 cosas que amas de tu pareja",
-        "Escribe un poema corto para tu pareja",
-        "Di 5 cumplidos sinceros",
-        "Cuenta cómo conociste a tu pareja",
-        "Di qué fue lo que más te atrajo de tu pareja",
-        "Describe tu cita perfecta",
-        "Haz un dibujo de tu pareja",
-        
-        // Retos graciosos
-        "Haz 10 sentadillas",
-        "Cuenta un chiste",
-        "Baila durante 30 segundos",
-        "Imita a tu pareja",
-        "Haz una pose graciosa para foto",
-        "Cuenta un secreto vergonzoso",
-        "Imita a un animal",
-        "Haz tu mejor cara graciosa",
-        "Habla como personaje de caricatura 1 min",
-        "Intenta no reír 30 segundos mientras tu pareja te hace reír",
-        
-        // Retos de servicio
-        "Prepara un snack para tu pareja",
-        "Dale un vaso de agua",
-        "Háblale como si fuera realeza",
-        "Sirve como mayordomo por 3 minutos",
-        "Prepara un postre sencillo",
-        
-        // Retos tiernos
-        "Abrazo de 30 segundos",
-        "Tómense una selfie juntos",
-        "Dile 'te amo' en 3 idiomas diferentes",
-        "Haz un gesto romántico improvisado",
-        "Comparte tu recuerdo favorito juntos"
-      ],
-      
-      medium: [
-        // Retos físicos suaves
-        "Dale un masaje de 2 minutos",
-        "Masaje de pies de 1 minuto",
-        "Masaje de manos con crema",
-        "Peina el cabello de tu pareja",
-        
-        // Retos picantes suaves
-        "Quítate una prenda de ropa",
-        "Beso apasionado por 10 segundos",
-        "Susurra algo picante al oído",
-        "3 besos donde tu pareja elija",
-        "Beso en el cuello (5 segundos)",
-        "Mordida suave en el lóbulo de la oreja",
-        
-        // Retos de baile
-        "Baile sensual para tu pareja",
-        "Baila pegados una canción completa",
-        "Baile de cadera por 20 segundos",
-        
-        // Retos de confesiones
-        "Haz una confesión atrevida",
-        "Di tu fantasía más secreta (suave)",
-        "Cuenta algo que nunca has dicho",
-        "Di qué parte del cuerpo de tu pareja te gusta más",
-        
-        // Retos de contacto
-        "Deja que tu pareja te dé 5 nalgadas suaves",
-        "Abrazo sensual de 20 segundos",
-        "Siéntate en el regazo de tu pareja 1 minuto",
-        "Juego de manos por 30 segundos",
-        
-        // Retos dulces
-        "Lame algo dulce del cuerpo de tu pareja",
-        "Come algo de la boca de tu pareja",
-        "Alimenta a tu pareja con los ojos cerrados",
-        
-        // Retos diversos
-        "Haz un strip tease corto (20 seg)",
-        "10 flexiones mientras tu pareja te observa",
-        "Tu pareja te maquilla/peina como quiera",
-        "Deja que tu pareja elija tu próxima prenda"
-      ],
-      
-      spicy: [
-        // Retos de desnudez
-        "Quítate 2 prendas",
-        "Tu pareja te quita una prenda",
-        "Quítate la camisa/blusa",
-        "Juega 2 rondas sin una prenda de arriba",
-        "Tu pareja desabrocha algo de tu ropa",
-        
-        // Besos intensos
-        "Beso francés intenso por 30 segundos",
-        "10 besos en diferentes partes del cuerpo",
-        "Beso en cualquier parte del cuerpo (tu pareja elige)",
-        "Marca un 'chupetón' donde tu pareja elija",
-        "Besa el abdomen de tu pareja",
-        "Secuencia de besos: cuello, hombro, pecho",
-        
-        // Masajes sensuales
-        "Masaje sensual en una zona que elija tu pareja (2 min)",
-        "Masaje con aceite en espalda (3 min)",
-        "Masaje sensual en muslos",
-        "Masaje en zona íntima externa (sobre ropa)",
-        
-        // Juegos atrevidos
-        "Juego de manos atrevido por 1 minuto",
-        "Tu pareja te hace cosquillas donde quiera por 30 seg",
-        "Deja que tu pareja te vende los ojos y te bese donde quiera",
-        "Juego de hielo por el cuerpo (30 seg)",
-        "Tu pareja pasa un cubito de hielo por donde quiera",
-        "Lame algo dulce de una zona que elija tu pareja",
-        
-        // Bailes hot
-        "Baile erótico solo para tu pareja (1 min)",
-        "Lap dance de 1 minuto",
-        "Striptease de 1 minuto",
-        "Baila reggaeton pegados",
-        
-        // Contacto íntimo
-        "Abrazo sin ropa por 30 segundos",
-        "Acuéstense juntos y abrácense 1 minuto",
-        "Tu pareja se sienta sobre ti 1 minuto",
-        "Posición de cucharita por 1 minuto",
-        
-        // Confesiones hot
-        "Cuenta tu fantasía más HOT",
-        "Di qué te gustaría que te hicieran ahora",
-        "Describe tu sueño erótico más reciente",
-        "Di 3 posiciones que quieras probar",
-        
-        // Retos de control
-        "Haz lo que tu pareja te pida (dentro del respeto)",
-        "Tu pareja controla tus movimientos por 1 minuto",
-        "Obedece 3 órdenes de tu pareja",
-        "Dramatiza una escena romántica de película"
-      ],
-      
-      funny: [
-        // Retos super graciosos
-        "Habla con acento extraño por 2 minutos",
-        "Actúa como si fueras de otra época",
-        "Imita a 3 personas famosas",
-        "Cuenta el chiste más malo que sepas",
-        "Haz tu mejor imitación de tu pareja enojada",
-        "Canta una canción operática inventada",
-        "Baila como robot por 30 segundos",
-        "Haz 10 sentadillas cantando",
-        "Habla solo con rimas por 1 minuto",
-        "Actúa una escena dramática exagerada",
-        "Imita a un bebé por 1 minuto",
-        "Haz tu peor baile posible",
-        "Cuenta una anécdota vergonzosa",
-        "Ríe sin parar por 20 segundos",
-        "Actúa como si fueras un superhéroe",
-        "Imita 5 emociones exageradas",
-        "Haz el sonido de 5 animales diferentes",
-        "Intenta tocar tu nariz con la lengua",
-        "Haz una cara rara y toma foto",
-        "Baila como estrella de rock"
-      ],
-      
-      ardiente: [
-        // Los retos MÁS hot
-        "Quítate toda la ropa de arriba",
-        "Sesión de besos en zona íntima (sobre ropa)",
-        "Tu pareja te desnuda lentamente",
-        "5 minutos de caricias donde tu pareja decida",
-        "Masaje completo con besos incluidos",
-        "Juego de lengua en el cuello",
-        "Tu pareja explora tu cuerpo 2 minutos",
-        "Simulen una escena de película +18",
-        "Beso francés mientras se tocan",
-        "Tu pareja te provoca como quiera 1 minuto",
-        "Posición comprometedora por 30 segundos",
-        "Recrear su mejor momento íntimo (simulado)",
-        "Susúrrense al oído sus deseos más profundos",
-        "Tu pareja marca territorio con besos",
-        "Baño de besos por todo el cuerpo",
-        "Juego de roles: elige un escenario",
-        "Caricias prohibidas (2 minutos)",
-        "Tu pareja te hace lo que ella/él quiera por 1 min",
-        "Masaje que termine en besos",
-        "Quitarse la ropa mutuamente"
-      ]
-    };
+    // Emojis para las cartas
+    const CARD_EMOJIS = ['💕', '💖', '💗', '💓', '💞', '💝', '❤️', '💘'];
 
-    // ==================== ESTADO DEL JUEGO ====================
-    
+    // Estado del juego
     let gameState = {
       player1Name: 'Jugador 1',
       player2Name: 'Jugador 2',
       withChallenges: false,
       challengeLevel: 'soft',
-      currentPlayer: 'X', // X o O
-      board: Array(9).fill(null),
-      gameOver: false,
-      winner: null
+      currentPlayer: 1,
+      scores: { player1: 0, player2: 0 },
+      cards: [],
+      flippedIndexes: [],
+      matchedPairs: [],
+      canFlip: true,
+      timerActive: false,
+      timeLeft: 15,
+      timerInterval: null
     };
 
-    const winningCombinations = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
-      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
-      [0, 4, 8], [2, 4, 6]             // Diagonales
-    ];
-
-    // ==================== ELEMENTOS DEL DOM ====================
-    
+    // Elementos DOM
     const setupScreen = document.getElementById('setup-screen');
     const gameScreen = document.getElementById('game-screen');
     const resultScreen = document.getElementById('result-screen');
-
+    
     const player1Input = document.getElementById('player1-name');
     const player2Input = document.getElementById('player2-name');
     const challengeToggle = document.getElementById('challenge-toggle');
     const challengeLevel = document.getElementById('challenge-level');
     const levelButtons = document.querySelectorAll('.level-btn');
     const startGameBtn = document.getElementById('start-game-btn');
-
+    
     const p1NameDisplay = document.getElementById('p1-name-display');
     const p2NameDisplay = document.getElementById('p2-name-display');
     const player1Info = document.getElementById('player1-info');
     const player2Info = document.getElementById('player2-info');
+    const p1Score = document.getElementById('p1-score');
+    const p2Score = document.getElementById('p2-score');
     const turnIndicator = document.getElementById('turn-indicator');
-    const board = document.getElementById('board');
-    const cells = document.querySelectorAll('.cell');
-
+    const timerDisplay = document.getElementById('timer-display');
+    const timerValue = document.getElementById('timer-value');
+    const memoryGrid = document.getElementById('memory-grid');
+    
     const resultTitle = document.getElementById('result-title');
     const resultMessage = document.getElementById('result-message');
+    const finalScores = document.getElementById('final-scores');
     const challengeBox = document.getElementById('challenge-box');
     const challengeText = document.getElementById('challenge-text');
     const playAgainBtn = document.getElementById('play-again-btn');
     const changeSettingsBtn = document.getElementById('change-settings-btn');
 
-    // ==================== SETUP LISTENERS ====================
-    
+    // Setup listeners
     challengeToggle.addEventListener('click', () => {
       challengeToggle.classList.toggle('active');
       gameState.withChallenges = challengeToggle.classList.contains('active');
@@ -834,89 +692,176 @@
     playAgainBtn.addEventListener('click', resetGame);
     changeSettingsBtn.addEventListener('click', backToSetup);
 
-    // ==================== GAME LOGIC ====================
-    
     function startGame() {
       const p1Name = player1Input.value.trim() || 'Jugador 1';
       const p2Name = player2Input.value.trim() || 'Jugador 2';
 
       gameState.player1Name = p1Name;
       gameState.player2Name = p2Name;
-      gameState.currentPlayer = 'X';
-      gameState.board = Array(9).fill(null);
-      gameState.gameOver = false;
-      gameState.winner = null;
+      gameState.currentPlayer = 1;
+      gameState.scores = { player1: 0, player2: 0 };
+      gameState.flippedIndexes = [];
+      gameState.matchedPairs = [];
+      gameState.canFlip = true;
 
       p1NameDisplay.textContent = p1Name;
       p2NameDisplay.textContent = p2Name;
+
+      // Crear pares de cartas
+      const pairs = [...CARD_EMOJIS, ...CARD_EMOJIS];
+      gameState.cards = shuffleArray(pairs);
 
       setupScreen.style.display = 'none';
       gameScreen.classList.add('active');
       resultScreen.classList.remove('active');
 
+      renderCards();
       updateTurnIndicator();
-      renderBoard();
+      updateScores();
     }
 
-    function renderBoard() {
-      cells.forEach((cell, index) => {
-        cell.textContent = gameState.board[index] || '';
-        cell.classList.remove('taken', 'winning');
-        
-        if (gameState.board[index]) {
-          cell.classList.add('taken');
+    function renderCards() {
+      memoryGrid.innerHTML = '';
+      
+      gameState.cards.forEach((emoji, index) => {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        if (gameState.matchedPairs.includes(index)) {
+          card.classList.add('flipped', 'matched');
+        } else if (gameState.flippedIndexes.includes(index)) {
+          card.classList.add('flipped');
         }
-      });
-
-      cells.forEach((cell, index) => {
-        cell.onclick = () => makeMove(index);
+        if (!gameState.canFlip) {
+          card.classList.add('disabled');
+        }
+        
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">?</div>
+            <div class="card-back">${emoji}</div>
+          </div>
+        `;
+        
+        card.addEventListener('click', () => flipCard(index));
+        memoryGrid.appendChild(card);
       });
     }
 
-    function makeMove(index) {
-      if (gameState.gameOver || gameState.board[index]) return;
+    function flipCard(index) {
+      // Validaciones
+      if (!gameState.canFlip) return;
+      if (gameState.flippedIndexes.includes(index)) return;
+      if (gameState.matchedPairs.includes(index)) return;
+      if (gameState.flippedIndexes.length >= 2) return;
 
-      gameState.board[index] = gameState.currentPlayer;
-      renderBoard();
+      // Voltear carta
+      gameState.flippedIndexes.push(index);
+      renderCards();
 
-      if (checkWinner()) {
-        endGame(gameState.currentPlayer);
-      } else if (gameState.board.every(cell => cell !== null)) {
-        endGame(null); // Empate
+      // Primera carta - iniciar timer
+      if (gameState.flippedIndexes.length === 1) {
+        startTimer();
+      }
+
+      // Segunda carta - verificar match
+      if (gameState.flippedIndexes.length === 2) {
+        gameState.canFlip = false;
+        stopTimer();
+        
+        setTimeout(() => {
+          checkMatch();
+        }, 1000);
+      }
+    }
+
+    function checkMatch() {
+      const [index1, index2] = gameState.flippedIndexes;
+      const card1 = gameState.cards[index1];
+      const card2 = gameState.cards[index2];
+
+      if (card1 === card2) {
+        // Match!
+        gameState.matchedPairs.push(index1, index2);
+        
+        if (gameState.currentPlayer === 1) {
+          gameState.scores.player1++;
+        } else {
+          gameState.scores.player2++;
+        }
+        
+        updateScores();
+        
+        // Verificar si terminó el juego
+        if (gameState.matchedPairs.length === gameState.cards.length) {
+          endGame();
+          return;
+        }
       } else {
-        gameState.currentPlayer = gameState.currentPlayer === 'X' ? 'O' : 'X';
+        // No match - cambiar turno
+        gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
         updateTurnIndicator();
       }
+
+      gameState.flippedIndexes = [];
+      gameState.canFlip = true;
+      gameState.timeLeft = 15;
+      renderCards();
     }
 
-    function checkWinner() {
-      for (let combination of winningCombinations) {
-        const [a, b, c] = combination;
-        if (
-          gameState.board[a] &&
-          gameState.board[a] === gameState.board[b] &&
-          gameState.board[a] === gameState.board[c]
-        ) {
-          // Resaltar celdas ganadoras
-          cells[a].classList.add('winning');
-          cells[b].classList.add('winning');
-          cells[c].classList.add('winning');
-          return true;
+    function startTimer() {
+      stopTimer();
+      gameState.timerActive = true;
+      gameState.timeLeft = 15;
+      timerDisplay.classList.add('active');
+      timerDisplay.classList.remove('warning');
+      timerValue.textContent = gameState.timeLeft;
+
+      gameState.timerInterval = setInterval(() => {
+        gameState.timeLeft--;
+        timerValue.textContent = gameState.timeLeft;
+
+        if (gameState.timeLeft <= 5) {
+          timerDisplay.classList.add('warning');
         }
+
+        if (gameState.timeLeft <= 0) {
+          handleTimeout();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (gameState.timerInterval) {
+        clearInterval(gameState.timerInterval);
+        gameState.timerInterval = null;
       }
-      return false;
+      gameState.timerActive = false;
+      timerDisplay.classList.remove('active', 'warning');
+    }
+
+    function handleTimeout() {
+      stopTimer();
+      
+      // Voltear las cartas de vuelta
+      gameState.flippedIndexes = [];
+      gameState.canFlip = true;
+      
+      // Cambiar turno
+      gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
+      updateTurnIndicator();
+      
+      renderCards();
+      alert('⏰ ¡Se acabó el tiempo! Turno perdido.');
     }
 
     function updateTurnIndicator() {
-      const currentName = gameState.currentPlayer === 'X' 
+      const currentName = gameState.currentPlayer === 1 
         ? gameState.player1Name 
         : gameState.player2Name;
-      const symbol = gameState.currentPlayer === 'X' ? '❌' : '⭕';
 
-      turnIndicator.textContent = `🎯 Turno de ${currentName} (${symbol})`;
+      turnIndicator.textContent = `🎯 Turno de ${currentName}`;
 
-      // Actualizar UI de jugadores
-      if (gameState.currentPlayer === 'X') {
+      if (gameState.currentPlayer === 1) {
         player1Info.classList.add('active');
         player2Info.classList.remove('active');
       } else {
@@ -925,40 +870,45 @@
       }
     }
 
-    function endGame(winner) {
-      gameState.gameOver = true;
-      gameState.winner = winner;
-
-      setTimeout(() => {
-        gameScreen.classList.remove('active');
-        resultScreen.classList.add('active');
-        showResults();
-      }, 1000);
+    function updateScores() {
+      p1Score.textContent = gameState.scores.player1;
+      p2Score.textContent = gameState.scores.player2;
     }
 
-    function showResults() {
-      if (gameState.winner === null) {
-        // Empate
+    function endGame() {
+      stopTimer();
+      gameScreen.classList.remove('active');
+      resultScreen.classList.add('active');
+
+      const score1 = gameState.scores.player1;
+      const score2 = gameState.scores.player2;
+
+      finalScores.innerHTML = `
+        <div class="final-score-box">
+          <div class="player-name">${gameState.player1Name}</div>
+          <div class="player-score">${score1} parejas</div>
+        </div>
+        <div class="final-score-box">
+          <div class="player-name">${gameState.player2Name}</div>
+          <div class="player-score">${score2} parejas</div>
+        </div>
+      `;
+
+      if (score1 === score2) {
         resultTitle.textContent = '🤝';
-        resultMessage.textContent = '¡Empate! Ambos son ganadores';
+        resultMessage.textContent = '¡Empate perfecto!';
         challengeBox.style.display = 'none';
       } else {
-        // Alguien ganó
-        const winnerName = gameState.winner === 'X' 
-          ? gameState.player1Name 
-          : gameState.player2Name;
-        const loserName = gameState.winner === 'X' 
-          ? gameState.player2Name 
-          : gameState.player1Name;
+        const winner = score1 > score2 ? gameState.player1Name : gameState.player2Name;
+        const loser = score1 > score2 ? gameState.player2Name : gameState.player1Name;
 
         resultTitle.textContent = '🎉';
-        resultMessage.textContent = `¡${winnerName} gana!`;
+        resultMessage.textContent = `¡${winner} gana!`;
 
-        // Mostrar reto si está activado
         if (gameState.withChallenges) {
           const challenge = getRandomChallenge();
           challengeBox.style.display = 'block';
-          challengeText.textContent = `${loserName}: ${challenge}`;
+          challengeText.textContent = `${loser}: ${challenge}`;
         } else {
           challengeBox.style.display = 'none';
         }
@@ -966,35 +916,47 @@
     }
 
     function getRandomChallenge() {
-      const challenges = CHALLENGES[gameState.challengeLevel];
+      if (!window.CHALLENGES) {
+        return "Haz 10 flexiones";
+      }
+      const challenges = window.CHALLENGES[gameState.challengeLevel] || window.CHALLENGES.soft;
       return challenges[Math.floor(Math.random() * challenges.length)];
     }
 
     function resetGame() {
-      gameState.board = Array(9).fill(null);
       // Alternar quién empieza
-      gameState.currentPlayer = gameState.currentPlayer === 'X' ? 'O' : 'X';
-      gameState.gameOver = false;
-      gameState.winner = null;
+      gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
+      gameState.scores = { player1: 0, player2: 0 };
+      gameState.flippedIndexes = [];
+      gameState.matchedPairs = [];
+      gameState.canFlip = true;
+
+      const pairs = [...CARD_EMOJIS, ...CARD_EMOJIS];
+      gameState.cards = shuffleArray(pairs);
 
       resultScreen.classList.remove('active');
       gameScreen.classList.add('active');
 
+      renderCards();
       updateTurnIndicator();
-      renderBoard();
+      updateScores();
     }
 
     function backToSetup() {
+      stopTimer();
       resultScreen.classList.remove('active');
       gameScreen.classList.remove('active');
       setupScreen.style.display = 'block';
     }
 
-    // ==================== INICIALIZACIÓN ====================
-    
-    window.addEventListener('DOMContentLoaded', () => {
-      console.log('🎮 Totito - Tres en Caos cargado');
-    });
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
   </script>
 
 </body>

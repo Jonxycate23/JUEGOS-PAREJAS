@@ -563,10 +563,13 @@ async function resetGame() {
   const snap = await getDoc(roomRef);
   const data = snap.data().gameData.tictactoe;
   
+  // Alternar quién empieza
+  const nextStarter = data.currentPlayer === "p1" ? "p2" : "p1";
+  
   await updateDoc(roomRef, {
     "gameData.tictactoe": {
       phase: "playing",
-      currentPlayer: "p1",
+      currentPlayer: nextStarter,  // Alternar el que empieza
       board: Array(9).fill(null),
       winner: null,
       winningCells: [],
