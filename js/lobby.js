@@ -340,6 +340,9 @@ async function createRoom() {
   const roomId = generateRoomId();
 
   try {
+    // Generar URL del avatar
+    const avatarURL = getAvatarURL(userProfile.avatarIndex || 0);
+    
     await setDoc(doc(db, 'rooms', roomId), {
       createdAt: serverTimestamp(),
       state: 'ready',  // Cambiar a 'ready' para que no pida seleccionar juego
@@ -349,7 +352,7 @@ async function createRoom() {
         p1: {
           uid: currentUser.uid,
           name: userProfile.name,
-          avatar: userProfile.avatar,
+          avatarURL: avatarURL,
           online: true
         }
       },
@@ -406,11 +409,13 @@ async function joinRoom() {
 
     // Si hay espacio, únete como p2
     if (!room.players?.p2) {
+      const avatarURL = getAvatarURL(userProfile.avatarIndex || 0);
+      
       await updateDoc(roomRef, {
         'players.p2': {
           uid: currentUser.uid,
           name: userProfile.name,
-          avatar: userProfile.avatar,
+          avatarURL: avatarURL,
           online: true
         },
         state: 'ready'

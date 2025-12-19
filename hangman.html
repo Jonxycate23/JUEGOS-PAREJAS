@@ -24,20 +24,20 @@
       position: relative;
     }
 
-    /* Botón para volver al lobby */
-    .back-btn {
+    /* Botón de menú flotante */
+    .float-menu-btn {
       position: fixed;
       top: 20px;
       right: 20px;
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: #FF7043;
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
       color: white;
       border: none;
       font-size: 28px;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
       transition: all 0.3s ease;
       z-index: 9999;
       display: flex;
@@ -45,9 +45,9 @@
       justify-content: center;
     }
 
-    .back-btn:hover {
+    .float-menu-btn:hover {
       transform: scale(1.15);
-      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
+      box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
     }
 
     .container {
@@ -435,8 +435,8 @@
 </head>
 <body>
 
-  <!-- Botón para volver al lobby -->
-  <button class="back-btn" onclick="window.location.href='lobby.html'" title="Volver al Lobby">🚪</button>
+  <!-- Botón de menú -->
+  <button class="float-menu-btn" onclick="window.location.href='lobby.html'" title="Volver al Lobby">🚪</button>
 
   <div class="container">
     <h1>🔤 Ahorcado</h1>

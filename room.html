@@ -17,7 +17,7 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
+      background: #FF7043;
       min-height: 100vh;
       padding: 20px;
       position: relative;
@@ -25,7 +25,7 @@
 
     /* Header de la sala */
     .room-header {
-      background: white;
+      background: #BBDEFB;
       border-radius: 20px;
       padding: 25px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.15);
@@ -58,7 +58,7 @@
     .room-title {
       font-size: 28px;
       font-weight: bold;
-      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
+      background: #FF7043;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -77,7 +77,7 @@
     }
 
     #room-code {
-      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
+      background: #FF7043;
       color: white;
       padding: 8px 20px;
       border-radius: 12px;
@@ -97,12 +97,12 @@
       font-weight: 600;
     }
 
-    /* Botón cambiar juego mejorado */
-    .change-game-btn {
+    /* Botón de menú flotante unificado */
+    .float-menu-btn {
       background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
       position: fixed;
       top: 20px;
-      right: 160px;
+      right: 20px;
       width: 56px;
       height: 56px;
       border-radius: 50%;
@@ -120,45 +120,74 @@
       margin: 0;
     }
 
-    .change-game-btn:hover {
-      transform: scale(1.15) rotate(10deg);
+    .float-menu-btn:hover {
+      transform: scale(1.15);
       box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
     }
 
-    .change-game-btn:active {
-      transform: scale(1.05);
+    .float-menu-btn:active {
+      transform: scale(1.05) rotate(10deg);
     }
 
-    /* Botón de salir */
-    .exit-btn {
-      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    /* Menú desplegable */
+    .float-menu {
       position: fixed;
-      top: 20px;
-      right: 90px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
+      top: 85px;
+      right: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      padding: 10px;
+      z-index: 9997;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 200px;
+    }
+
+    .float-menu.active {
+      display: flex;
+      animation: slideDownMenu 0.3s ease;
+    }
+
+    @keyframes slideDownMenu {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .float-menu-item {
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 28px;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 600;
       border: none;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
-      transition: all 0.3s ease;
-      z-index: 9998;
-      padding: 0;
-      margin: 0;
+      text-align: left;
+      width: 100%;
+      background: white;
     }
 
-    .exit-btn:hover {
-      transform: scale(1.15);
-      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
+    .float-menu-item:hover {
+      background: #f0f4ff;
+      transform: translateX(5px);
     }
 
-    .exit-btn:active {
-      transform: scale(1.05);
+    .float-menu-item.change-game {
+      color: #3498db;
+    }
+
+    .float-menu-item.exit {
+      color: #e74c3c;
     }
 
     /* Contenedor de contenido */
@@ -176,7 +205,7 @@
       cursor: pointer;
       border: none;
       border-radius: 12px;
-      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
+      background: #FF7043;
       color: white;
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
@@ -192,20 +221,20 @@
     }
 
     button:disabled {
-      background: linear-gradient(135deg, #ccc 0%, #999 100%);
+      background: #FF7043;
       cursor: not-allowed;
       opacity: 0.6;
     }
 
     button[data-game] {
-      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
+      background: #FF7043;
       font-size: 18px;
       padding: 16px 32px;
       margin: 12px;
     }
 
     button[disabled] {
-      background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+      background: #FF7043;
       color: #666;
     }
 
@@ -214,16 +243,16 @@
       font-size: 16px;
       padding: 12px 16px;
       text-align: center;
-      border: 2px solid #FF8C69;
+      border: 2px solid #FF6B35;
       border-radius: 12px;
       margin: 8px;
       transition: all 0.3s;
       outline: none;
-      background: white;
+      background: #BBDEFB;
     }
 
     input:focus:not(#chat-input), textarea:focus {
-      border-color: #D946EF;
+      border-color: #1E88E5;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
       transform: scale(1.02);
     }
@@ -234,7 +263,7 @@
       text-transform: uppercase;
       font-weight: bold;
       text-align: center;
-      border: 3px solid #FF8C69;
+      border: 3px solid #FF6B35;
       border-radius: 12px;
       padding: 12px;
     }
@@ -245,7 +274,7 @@
       letter-spacing: 12px;
       margin: 25px 0;
       font-weight: bold;
-      background: linear-gradient(135deg, #FFB199 0%, #E9A8F2 100%);
+      background: #FF7043;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -254,7 +283,7 @@
 
     /* Secciones de juego */
     .game-section {
-      background: white;
+      background: #BBDEFB;
       padding: 35px;
       border-radius: 20px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.12);
@@ -274,7 +303,7 @@
     }
 
     .game-section h2 {
-      color: #FF8C69;
+      color: #FF6B35;
       font-size: 32px;
       margin-bottom: 20px;
       text-align: center;
@@ -290,7 +319,7 @@
     }
 
     .stat-box {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: #FF7043;
       padding: 15px 25px;
       border-radius: 15px;
       text-align: center;
@@ -308,7 +337,7 @@
     .stat-value {
       font-size: 28px;
       font-weight: bold;
-      color: #FF8C69;
+      color: #FF6B35;
     }
 
     .stat-value.danger {
@@ -327,7 +356,7 @@
 
     /* Área de resultado mejorada */
     #result-area {
-      background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+      background: #FF7043;
       padding: 25px;
       border-radius: 15px;
       margin: 20px 0;
@@ -362,7 +391,7 @@
       padding: 12px;
       background: #f0f4ff;
       border-radius: 10px;
-      border-left: 4px solid #FF8C69;
+      border-left: 4px solid #FF6B35;
     }
 
     /* Modal mejorado */
@@ -386,7 +415,7 @@
     }
 
     .modal-content {
-      background: white;
+      background: #BBDEFB;
       padding: 40px;
       border-radius: 25px;
       max-width: 500px;
@@ -407,7 +436,7 @@
     }
 
     .modal-content h2 {
-      color: #FF8C69;
+      color: #FF6B35;
       margin-bottom: 15px;
       font-size: 28px;
     }
@@ -420,7 +449,7 @@
 
     /* Challenge display mejorado */
     .challenge-display {
-      background: linear-gradient(135deg, #ffe0e0 0%, #ffcccc 100%);
+      background: #FF7043;
       padding: 20px;
       border-radius: 15px;
       margin: 20px 0;
@@ -445,7 +474,7 @@
       font-size: 15px;
       padding: 15px;
       border-radius: 12px;
-      border: 2px solid #FF8C69;
+      border: 2px solid #FF6B35;
       resize: vertical;
       font-family: inherit;
       line-height: 1.5;
@@ -453,7 +482,7 @@
 
     /* Botón de siguiente ronda destacado */
     #next-round-btn {
-      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      background: #FF7043;
       font-size: 18px;
       padding: 16px 32px;
       margin-top: 20px;
@@ -491,20 +520,15 @@
         letter-spacing: 8px;
       }
 
-      .change-game-btn {
+      .float-menu-btn {
         width: 48px;
         height: 48px;
         font-size: 24px;
         top: 15px;
-        right: 140px;
       }
 
-      .exit-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 24px;
-        top: 15px;
-        right: 80px;
+      .float-menu {
+        top: 72px;
       }
 
       .game-stats {
@@ -536,7 +560,7 @@
       .modal-buttons {
         position: sticky;
         bottom: 0;
-        background: white;
+        background: #BBDEFB;
         padding-top: 15px;
         margin-top: 20px;
       }
@@ -569,25 +593,22 @@
         letter-spacing: 6px;
       }
 
-      button:not(.change-game-btn):not(.exit-btn):not(.chat-fab):not(.chat-btn-small):not(.emoji-btn):not(#chat-send) {
+      button:not(.float-menu-btn):not(.chat-fab):not(.chat-btn-small):not(.emoji-btn):not(#chat-send):not(.float-menu-item) {
         padding: 12px 20px;
         font-size: 14px;
       }
 
-      .change-game-btn {
+      .float-menu-btn {
         width: 44px;
         height: 44px;
         font-size: 20px;
         top: 12px;
-        right: 120px;
       }
 
-      .exit-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 20px;
-        top: 12px;
-        right: 65px;
+      .float-menu {
+        top: 65px;
+        right: 12px;
+        min-width: 180px;
       }
 
       .modal-content {
@@ -633,11 +654,18 @@
     </div>
   </div>
 
-  <!-- Botón para cambiar de juego -->
-  <button class="change-game-btn" id="open-game-selector" title="Cambiar Juego">🎮</button>
+  <!-- Botón de menú flotante -->
+  <button class="float-menu-btn" id="float-menu-btn" title="Menú">☰</button>
 
-  <!-- Botón para salir al lobby -->
-  <button class="exit-btn" id="exit-to-lobby" title="Salir al Lobby">🚪</button>
+  <!-- Menú desplegable -->
+  <div class="float-menu" id="float-menu">
+    <button class="float-menu-item change-game" id="open-game-selector">
+      🎮 Cambiar Juego
+    </button>
+    <button class="float-menu-item exit" id="exit-to-lobby">
+      🚪 Salir al Lobby
+    </button>
+  </div>
 
   <!-- Contenedor principal -->
   <div class="content-container">
@@ -659,7 +687,7 @@
         <button disabled>🍾 Botella Giratoria (pronto)</button>
         <button disabled>🎲 Dado Virtual (pronto)</button>
         <br><br>
-        <button id="close-modal" style="background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);">✕ Cancelar</button>
+        <button id="close-modal" style="background: #FF7043;">✕ Cancelar</button>
       </div>
     </div>
 
@@ -726,7 +754,7 @@
 
         <!-- FASE: INGRESAR PALABRA Y RETO -->
         <div id="set-word-area" style="display:none">
-          <p style="font-size: 18px; color: #FF8C69; margin-bottom: 20px;">
+          <p style="font-size: 18px; color: #FF6B35; margin-bottom: 20px;">
             ✍️ Escribe la palabra secreta y el reto para tu pareja
           </p>
           
@@ -830,7 +858,7 @@
                 <textarea 
                   id="tictactoe-custom-input" 
                   placeholder="Ejemplo:&#10;Canta una canción&#10;Baila por 30 segundos&#10;Haz 10 flexiones"
-                  style="width: 100%; min-height: 150px; padding: 15px; border: 2px solid #FF8C69; border-radius: 12px; font-size: 14px; font-family: Arial; resize: vertical;"
+                  style="width: 100%; min-height: 150px; padding: 15px; border: 2px solid #FF6B35; border-radius: 12px; font-size: 14px; font-family: Arial; resize: vertical;"
                 ></textarea>
                 <p style="font-size: 12px; color: #999; margin-top: 10px;">
                   💡 Tip: Escribe varios retos para que se elijan al azar
@@ -933,26 +961,46 @@
   </script>
 
   <script type="module">
-    // Lógica del modal de cambio de juego
+    // Lógica del menú flotante
+    const floatMenuBtn = document.getElementById("float-menu-btn");
+    const floatMenu = document.getElementById("float-menu");
     const modal = document.getElementById("game-selector-modal");
     const openBtn = document.getElementById("open-game-selector");
     const closeBtn = document.getElementById("close-modal");
     const exitBtn = document.getElementById("exit-to-lobby");
 
+    // Toggle del menú
+    floatMenuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      floatMenu.classList.toggle("active");
+    });
+
+    // Cerrar menú al hacer click fuera
+    document.addEventListener("click", (e) => {
+      if (!floatMenu.contains(e.target) && !floatMenuBtn.contains(e.target)) {
+        floatMenu.classList.remove("active");
+      }
+    });
+
+    // Abrir modal de cambio de juego
     openBtn.addEventListener("click", () => {
+      floatMenu.classList.remove("active");
       modal.classList.add("active");
     });
 
+    // Cerrar modal
     closeBtn.addEventListener("click", () => {
       modal.classList.remove("active");
     });
 
+    // Salir al lobby
     exitBtn.addEventListener("click", () => {
       if (confirm("¿Seguro que quieres salir al lobby? Se perderá el progreso del juego actual.")) {
         window.location.href = "lobby.html";
       }
     });
 
+    // Cerrar modal al hacer click fuera
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
         modal.classList.remove("active");
